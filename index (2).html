@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>EcoSME — Digital Energy Efficiency &amp; Green Finance Readiness Platform</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --background: #F5F8F6;
+      --foreground: #14243A;
+      --card: #FFFFFF;
+      --content: #F5F8F6;
+      --border: #DDE5DF;
+      --muted-foreground: #4B5563;
+    }
+    body {
+      font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      -webkit-tap-highlight-color: transparent;
+    }
+    @media (max-width: 640px) {
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Dynamic Sidebar & Card Interactive Animations */
+    .sidebar-panel {
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-item-dynamic {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-item-dynamic::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 15%;
+      bottom: 15%;
+      width: 4px;
+      border-radius: 0 4px 4px 0;
+      background: #16A36A;
+      transform: scaleY(0);
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-item-dynamic:hover {
+      transform: translateX(4px);
+      background-color: #E8F7F0;
+      color: #123B2A;
+    }
+    .nav-item-dynamic:hover::before,
+    .nav-item-active::before {
+      transform: scaleY(1);
+    }
+    .nav-item-active {
+      background-color: #123B2A !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 6px 16px -4px rgba(18, 59, 42, 0.35);
+      transform: translateX(4px);
+    }
+
+    .interactive-card {
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-color 0.28s ease;
+    }
+    .interactive-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px -8px rgba(18, 59, 42, 0.14);
+      border-color: #16A36A;
+    }
+
+    .input-dynamic {
+      transition: all 0.22s ease;
+    }
+    .input-dynamic:focus {
+      outline: none;
+      border-color: #16A36A !important;
+      background-color: #FFFFFF !important;
+      box-shadow: 0 0 0 3px rgba(22, 163, 106, 0.18);
+      transform: translateY(-1px);
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-view {
+      animation: fadeSlideUp 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(22, 163, 106, 0.45);
+      }
+      50% {
+        box-shadow: 0 0 0 6px rgba(22, 163, 106, 0);
+      }
+    }
+    .pulse-ring {
+      animation: pulseGlow 2.2s infinite;
+    }
+
+    @keyframes highlightFlash {
+      0% {
+        background-color: rgba(22, 163, 106, 0.22);
+      }
+      100% {
+        background-color: transparent;
+      }
+    }
+    .flash-update {
+      animation: highlightFlash 0.7s ease-out;
+    }
+  </style>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased pb-24 lg:pb-8 relative overflow-x-hidden">
+  <!-- STICKY TOP HEADER BAR (#123B2A) -->
+  <header class="sticky top-0 z-30 bg-[#123B2A] text-white shadow-lg border-b border-emerald-800">
+    <div class="max-w-7xl mx-auto px-3 sm:px-5 py-2.5 sm:py-3 space-y-2.5">
+      <!-- Top Row: Brand + Left Sidebar Toggle + Top-Right Personal/Company Profile Button -->
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <!-- Toggle Left Navigation Sidebar Button -->
+          <button
+            type="button"
+            onclick="toggleLeftSidebar()"
+            class="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-[#0D2B1E] hover:bg-emerald-900 border border-emerald-600/50 flex items-center justify-center text-emerald-300 font-bold text-sm transition-transform active:scale-95 cursor-pointer shrink-0"
+            title="Buka/Tutup Sidebar Navigasi Kiri"
+          >
+            ☰
+          </button>
+          <div class="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-[#16A36A] flex items-center justify-center font-extrabold text-sm sm:text-base shrink-0 shadow-xs pulse-ring">
+            E
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="font-extrabold text-base sm:text-lg tracking-tight">EcoSME</span>
+              <span class="inline-flex items-center gap-1 rounded bg-amber-400/20 border border-amber-300/40 px-1.5 py-0.5 text-xs font-bold text-amber-200">
+                <span class="h-1.5 w-1.5 rounded-full bg-amber-300 animate-ping"></span>
+                DEMO DATA
+              </span>
+            </div>
+            <p class="text-xs text-emerald-100 truncate hidden sm:block">
+              Digital Energy Efficiency &amp; Green Finance Readiness Platform for SMEs
+            </p>
+          </div>
+        </div>
+
+        <!-- TOP-RIGHT PERSONAL & COMPANY PROFILE SIDEBAR TRIGGER BUTTON -->
+        <button
+          type="button"
+          onclick="toggleProfileDrawer()"
+          id="top-right-profile-btn"
+          class="group flex items-center gap-2.5 rounded-xl bg-[#0D2B1E] hover:bg-emerald-950 active:scale-[0.98] border-2 border-[#16A36A] px-2.5 sm:px-3.5 py-1.5 text-left transition-all duration-300 shadow-sm hover:shadow-emerald-500/20 hover:shadow-lg cursor-pointer shrink-0"
+          title="Buka/Tutup Sidebar Data Personal Diri & Perusahaan"
+        >
+          <div class="relative">
+            <div id="header-avatar" class="h-8 w-8 rounded-full bg-[#16A36A] group-hover:scale-105 transition-transform text-white font-bold text-xs flex items-center justify-center shrink-0">
+              BS
+            </div>
+            <span class="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-[#0D2B1E]"></span>
+          </div>
+          <div class="text-xs leading-tight hidden md:block max-w-[175px]">
+            <span id="header-user-name" class="font-bold text-white block truncate">Ir. Budi Santoso</span>
+            <span id="header-company-name" class="text-emerald-300 font-medium block truncate">PT Sinar Tekstil Mandiri</span>
+          </div>
+          <span class="rounded-lg bg-[#16A36A]/25 group-hover:bg-[#16A36A] group-hover:text-white transition-colors border border-[#16A36A]/60 px-2.5 py-1 text-xs font-bold text-emerald-100 whitespace-nowrap">
+            <span class="sm:hidden">Profil ☰</span>
+            <span class="hidden sm:inline">Data Diri &amp; Perusahaan ☰</span>
+          </span>
+        </button>
+      </div>
+
+      <!-- Second Row: Touch-Friendly Scrollable Portal Tabs -->
+      <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar bg-[#0D2B1E] p-1 rounded-xl border border-emerald-800/90">
+        <button onclick="switchPortal('PUBLIC')" id="tab-PUBLIC" class="flex-1 min-w-[125px] px-3 py-2 rounded-lg text-xs font-bold bg-[#16A36A] text-white shadow-xs whitespace-nowrap transition-all cursor-pointer">
+          1. Public Landing
+        </button>
+        <button onclick="switchPortal('IKM')" id="tab-IKM" class="flex-1 min-w-[125px] px-3 py-2 rounded-lg text-xs font-bold text-emerald-100 hover:text-white hover:bg-white/5 whitespace-nowrap transition-all cursor-pointer">
+          2. IKM Dashboard
+        </button>
+        <button onclick="switchPortal('BANK')" id="tab-BANK" class="flex-1 min-w-[120px] px-3 py-2 rounded-lg text-xs font-bold text-emerald-100 hover:text-white hover:bg-white/5 whitespace-nowrap transition-all cursor-pointer">
+          3. Bank Portal
+        </button>
+        <button onclick="switchPortal('ADMIN')" id="tab-ADMIN" class="flex-1 min-w-[120px] px-3 py-2 rounded-lg text-xs font-bold text-emerald-100 hover:text-white hover:bg-white/5 whitespace-nowrap transition-all cursor-pointer">
+          4. Admin Portal
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <div class="max-w-7xl mx-auto px-3 sm:px-5 pt-4 space-y-4">
+    <!-- Mobile Active User & Company Quick Pill (Visible on Smartphones) -->
+    <div class="md:hidden rounded-xl bg-white border border-[#DDE5DF] p-3 flex items-center justify-between gap-2 shadow-2xs">
+      <div class="min-w-0 text-xs">
+        <span class="text-[#16A36A] font-bold uppercase block">Sesi Aktif Saat Ini</span>
+        <strong id="mobile-banner-user" class="text-slate-900 block truncate">Ir. Budi Santoso</strong>
+        <span id="mobile-banner-company" class="text-slate-600 block truncate">PT Sinar Tekstil Mandiri (DEMO)</span>
+      </div>
+      <button
+        type="button"
+        onclick="openProfileDrawerMobile()"
+        class="shrink-0 rounded-lg bg-[#123B2A] text-white px-3 py-2 text-xs font-bold active:scale-95 transition-transform"
+      >
+        Edit Data Diri →
+      </button>
+    </div>
+
+    <!-- 3-COLUMN DYNAMIC WORKSPACE: LEFT NAV SIDEBAR + CENTER CONTENT + RIGHT PROFILE SIDEBAR -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
+
+      <!-- ===================================================================== -->
+      <!-- LEFT SIDEBAR: DYNAMIC PORTAL NAVIGATION & LIVE IOT TELEMETRY PULSE    -->
+      <!-- ===================================================================== -->
+      <div
+        id="left-sidebar-backdrop"
+        onclick="closeLeftSidebarMobile(event)"
+        class="hidden lg:block lg:col-span-3 fixed inset-0 z-50 bg-black/50 backdrop-blur-xs lg:static lg:bg-transparent lg:backdrop-blur-none sidebar-panel"
+      >
+        <aside
+          id="left-nav-sidebar"
+          onclick="event.stopPropagation()"
+          class="h-full w-full max-w-xs lg:max-w-none lg:h-auto overflow-y-auto bg-[var(--card)] border-r-2 lg:border border-[#DDE5DF] lg:rounded-2xl p-4 space-y-4 shadow-2xl lg:shadow-sm text-xs sidebar-panel"
+        >
+          <!-- Active Workspace Context Header -->
+          <div class="rounded-xl bg-[#123B2A] text-white p-3.5 space-y-1.5 relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-300">
+                <span class="h-2 w-2 rounded-full bg-[#16A36A] animate-ping"></span>
+                Navigasi Dinamis
+              </span>
+              <button
+                type="button"
+                onclick="toggleLeftSidebar()"
+                class="lg:hidden rounded bg-white/15 px-2 py-0.5 text-xs font-bold text-white"
+              >
+                Tutup ✕
+              </button>
+            </div>
+            <h3 id="left-sidebar-portal-title" class="text-sm font-extrabold">1. Public Website</h3>
+            <p id="left-sidebar-portal-desc" class="text-xs text-emerald-100/90">
+              Pilih menu di bawah untuk berpindah modul secara interaktif.
+            </p>
+          </div>
+
+          <!-- Dynamic Menu Items (Changes per Portal & Highlights on Click) -->
+          <div class="space-y-1.5" id="left-dynamic-menu">
+            <button onclick="selectLeftNav('PUBLIC', 'HERO')" id="lnav-HERO" class="nav-item-dynamic nav-item-active w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-bold text-left cursor-pointer">
+              <span>🏠 Ringkasan &amp; Hero</span>
+              <span class="text-xs opacity-80">→</span>
+            </button>
+            <button onclick="selectLeftNav('PUBLIC', 'PROFILE_SUMMARY')" id="lnav-PROFILE_SUMMARY" class="nav-item-dynamic w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-semibold text-slate-700 text-left cursor-pointer">
+              <span>🪪 Kartu Profil Terhubung</span>
+              <span class="rounded bg-emerald-100 text-emerald-900 px-1.5 py-0.5 text-xs font-bold">Live</span>
+            </button>
+            <button onclick="selectLeftNav('PUBLIC', 'WORKFLOW')" id="lnav-WORKFLOW" class="nav-item-dynamic w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-semibold text-slate-700 text-left cursor-pointer">
+              <span>🔄 6-Stage Alur EcoSME</span>
+              <span class="text-xs opacity-60">6 Tahap</span>
+            </button>
+            <button onclick="selectLeftNav('IKM', 'OVERVIEW')" id="lnav-IKM_OVERVIEW" class="nav-item-dynamic w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-semibold text-slate-700 text-left cursor-pointer">
+              <span>⚡ Monitoring Energi IKM</span>
+              <span class="rounded bg-[#E8F7F0] text-[#16A36A] px-1.5 py-0.5 text-xs font-bold">41,8k kWh</span>
+            </button>
+            <button onclick="selectLeftNav('IKM', 'MACHINES')" id="lnav-IKM_MACHINES" class="nav-item-dynamic w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-semibold text-slate-700 text-left cursor-pointer">
+              <span>⚙️ Status Mesin &amp; Sensor</span>
+              <span class="rounded bg-emerald-100 text-emerald-900 px-1.5 py-0.5 text-xs font-bold">5 Online</span>
+            </button>
+            <button onclick="selectLeftNav('IKM', 'GREENSCORE')" id="lnav-IKM_GREENSCORE" class="nav-item-dynamic w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-semibold text-slate-700 text-left cursor-pointer">
+              <span>🌱 Green Score Card</span>
+              <span class="rounded bg-[#123B2A] text-white px-1.5 py-0.5 text-xs font-bold">83 • A</span>
+            </button>
+            <button onclick="selectLeftNav('BANK', 'PIPELINE')" id="lnav-BANK_PIPELINE" class="nav-item-dynamic w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-semibold text-slate-700 text-left cursor-pointer">
+              <span>🏦 Pipeline Bank Mitra</span>
+              <span class="rounded bg-blue-100 text-blue-900 px-1.5 py-0.5 text-xs font-bold">Rp450 Jt</span>
+            </button>
+            <button onclick="selectLeftNav('ADMIN', 'AUDIT')" id="lnav-ADMIN_AUDIT" class="nav-item-dynamic w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-semibold text-slate-700 text-left cursor-pointer">
+              <span>🛡️ Audit Log Sistem</span>
+              <span class="text-xs opacity-60">RBAC</span>
+            </button>
+          </div>
+
+          <!-- LIVE INTERACTIVE IOT PULSE WIDGET INSIDE LEFT SIDEBAR -->
+          <div class="rounded-xl bg-[#F5F8F6] border border-[#DDE5DF] p-3.5 space-y-2.5 interactive-card">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-[#123B2A] flex items-center gap-1.5">
+                <span class="h-2.5 w-2.5 rounded-full bg-[#16A36A] animate-pulse"></span>
+                Live Sensor Telemetry
+              </span>
+              <span id="sidebar-live-badge" class="rounded bg-emerald-100 text-emerald-900 px-1.5 py-0.5 font-mono text-xs font-bold">
+                380,4 V
+              </span>
+            </div>
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <span class="text-slate-600">Beban Aktif Pabrik:</span>
+                <strong id="sidebar-live-kw" class="font-mono text-[#123B2A]">84,6 kW</strong>
+              </div>
+              <div class="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                <div id="sidebar-live-bar" class="h-full bg-[#16A36A] rounded-full transition-all duration-500" style="width: 72%"></div>
+              </div>
+              <div class="flex justify-between text-xs text-slate-500">
+                <span>Power Factor (cos φ): <strong id="sidebar-live-pf" class="text-[#16A36A]">0,92</strong></span>
+                <span>5/5 Gateway</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onclick="simulateLiveTelemetryPulse()"
+              class="w-full rounded-lg bg-[#123B2A] hover:bg-[#16A36A] active:scale-95 text-white py-2 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+            >
+              ⚡ Simulasikan Denyut Sensor IoT
+            </button>
+          </div>
+        </aside>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- CENTER WORKSPACE COLUMN                                               -->
+      <!-- ===================================================================== -->
+      <div id="main-workspace-col" class="lg:col-span-5 space-y-4 sm:space-y-5 transition-all duration-300">
+        <!-- VIEW 1: PUBLIC LANDING PAGE -->
+        <section id="view-PUBLIC" class="space-y-4 sm:space-y-5 animate-view">
+          <div id="sec-HERO" class="rounded-2xl bg-[#123B2A] text-white p-4 sm:p-6 space-y-3 border border-emerald-800 shadow-md interactive-card">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <p class="text-xs font-bold uppercase tracking-wider text-emerald-300">
+                Digital Energy Efficiency &amp; Green Finance Readiness
+              </p>
+              <span class="rounded-lg bg-white/10 px-2.5 py-1 text-xs text-emerald-200">
+                Organisasi Aktif: <strong id="hero-company-badge">PT Sinar Tekstil Mandiri (DEMO)</strong>
+              </span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight leading-snug">
+              Make Energy Efficiency Measurable. Make Green Growth Possible.
+            </h1>
+            <p class="text-xs sm:text-sm text-emerald-100 leading-relaxed">
+              EcoSME membantu Industri Kecil dan Menengah (IKM) memantau konsumsi listrik per mesin, memvalidasi penghematan energi, menghitung reduksi emisi karbon Scope 2, dan menyiapkan profil <strong>Provisional Green Score</strong> untuk bank mitra.
+            </p>
+            <div class="grid grid-cols-1 sm:flex sm:flex-wrap gap-2.5 pt-1">
+              <button onclick="switchPortal('IKM')" class="w-full sm:w-auto rounded-xl bg-[#16A36A] hover:bg-emerald-500 active:scale-95 px-4 py-2.5 text-xs font-extrabold text-white text-center shadow-xs transition-all cursor-pointer">
+                Get Started / Buka IKM Dashboard →
+              </button>
+              <button onclick="switchPortal('BANK')" class="w-full sm:w-auto rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 border border-emerald-400/40 px-4 py-2.5 text-xs font-bold text-white text-center transition-all cursor-pointer">
+                Explore Partner Bank Portal →
+              </button>
+            </div>
+          </div>
+
+          <!-- Summary Card of Active Personal & Company Profile -->
+          <div id="sec-PROFILE_SUMMARY" class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 space-y-3 text-xs shadow-2xs interactive-card">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border)] pb-3">
+              <div>
+                <span class="text-[#16A36A] font-bold uppercase block">Ringkasan Profil Terhubung (Real-Time Sync)</span>
+                <h2 class="text-sm font-bold">Identitas Personal &amp; Profil Perusahaan IKM</h2>
+              </div>
+              <button onclick="openProfileDrawerMobile()" class="rounded-lg bg-[#123B2A] hover:bg-[#16A36A] transition-colors text-white px-3 py-1.5 font-bold cursor-pointer">
+                Edit di Sidebar Kanan →
+              </button>
+            </div>
+            <div id="live-profile-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] interactive-card">
+                <span class="text-[var(--muted-foreground)] block">Nama &amp; Jabatan Personal</span>
+                <strong id="card-personal-name" class="text-sm block mt-0.5 text-[#123B2A]">Ir. Budi Santoso</strong>
+                <span id="card-personal-title" class="text-[var(--muted-foreground)]">Managing Director &amp; Plant Owner</span>
+              </div>
+              <div class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] interactive-card">
+                <span class="text-[var(--muted-foreground)] block">Nama Perusahaan &amp; Sektor</span>
+                <strong id="card-company-name" class="text-sm block mt-0.5 text-[#123B2A]">PT Sinar Tekstil Mandiri (DEMO)</strong>
+                <span id="card-company-sector" class="text-[var(--muted-foreground)]">Textile Dyeing &amp; Weaving (ISIC 131)</span>
+              </div>
+              <div class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] interactive-card">
+                <span class="text-[var(--muted-foreground)] block">Legalitas (NPWP &amp; NIB)</span>
+                <strong id="card-company-npwp" class="font-mono block mt-0.5">01.842.910.4-429.000</strong>
+                <span id="card-company-nib" class="font-mono text-[var(--muted-foreground)]">NIB: 9120300481920</span>
+              </div>
+              <div class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] interactive-card">
+                <span class="text-[var(--muted-foreground)] block">Tarif PLN &amp; Kapasitas</span>
+                <strong id="card-company-pln" class="text-sm text-[#16A36A] block mt-0.5">I-3 / TM (&gt;200 kVA)</strong>
+                <span id="card-company-kva" class="text-[var(--muted-foreground)]">Daya Terpasang: 240 kVA</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6-Stage Business Workflow -->
+          <div id="sec-WORKFLOW" class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 space-y-3 shadow-2xs interactive-card">
+            <h2 class="text-sm font-bold">Core 6-Stage EcoSME Workflow (Klik Tahap untuk Detail)</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+              <div onclick="switchPortal('IKM'); switchIkmSub('MACHINES')" class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] interactive-card cursor-pointer">
+                <span class="font-bold text-[#16A36A] block">01. Measure Energy →</span>
+                <span class="text-[var(--muted-foreground)]">ESP32 &amp; 3-Phase Modbus Sub-Metering</span>
+              </div>
+              <div onclick="switchPortal('IKM'); switchIkmSub('OVERVIEW')" class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] interactive-card cursor-pointer">
+                <span class="font-bold text-[#16A36A] block">02. Analyze Consumption →</span>
+                <span class="text-[var(--muted-foreground)]">True Active Power (V × I × PF)</span>
+              </div>
+              <div onclick="switchPortal('IKM'); switchIkmSub('MACHINES')" class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] interactive-card cursor-pointer">
+                <span class="font-bold text-[#16A36A] block">03. Identify Inefficiencies →</span>
+                <span class="text-[var(--muted-foreground)]">Spike, PF &lt; 0.85 &amp; Offline Alerts</span>
+              </div>
+              <div onclick="switchPortal('IKM'); switchIkmSub('OVERVIEW')" class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] interactive-card cursor-pointer">
+                <span class="font-bold text-[#16A36A] block">04. Validate Savings →</span>
+                <span class="text-[var(--muted-foreground)]">Normalized VERIFIED vs ESTIMATED</span>
+              </div>
+              <div onclick="switchPortal('IKM'); switchIkmSub('GREENSCORE')" class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] interactive-card cursor-pointer">
+                <span class="font-bold text-[#16A36A] block">05. Generate Green Score →</span>
+                <span class="text-[var(--muted-foreground)]">Provisional 0–100 Rating (Grade A–D)</span>
+              </div>
+              <div onclick="switchPortal('BANK')" class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] interactive-card cursor-pointer">
+                <span class="font-bold text-[#16A36A] block">06. Financing Profile →</span>
+                <span class="text-[var(--muted-foreground)]">Consented Bank Underwriting Dossier</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 2: IKM DASHBOARD -->
+        <section id="view-IKM" class="hidden space-y-4 animate-view">
+          <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 space-y-2.5 shadow-2xs">
+            <span class="text-xs font-bold text-[#16A36A] uppercase block">IKM Energy &amp; Sustainability Workspace</span>
+            <h2 id="ikm-org-heading" class="text-sm sm:text-base font-bold leading-snug">PT Sinar Tekstil Mandiri (DEMO) — Bandung Regency, West Java</h2>
+            <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-1.5 text-xs pt-1">
+              <button onclick="switchIkmSub('OVERVIEW')" id="ikm-sub-OVERVIEW" class="px-3 py-2 rounded-xl font-bold bg-[#123B2A] text-white cursor-pointer transition-all">Overview KPIs</button>
+              <button onclick="switchIkmSub('MACHINES')" id="ikm-sub-MACHINES" class="px-3 py-2 rounded-xl font-bold border border-[var(--border)] hover:border-[#16A36A] cursor-pointer transition-all">Machines &amp; IoT (5)</button>
+              <button onclick="switchIkmSub('GREENSCORE')" id="ikm-sub-GREENSCORE" class="px-3 py-2 rounded-xl font-bold border border-[var(--border)] hover:border-[#16A36A] cursor-pointer transition-all">Green Score &amp; CO₂</button>
+              <button onclick="switchIkmSub('FINANCING')" id="ikm-sub-FINANCING" class="px-3 py-2 rounded-xl font-bold border border-[var(--border)] hover:border-[#16A36A] cursor-pointer transition-all">Financing &amp; Consent</button>
+            </div>
+          </div>
+
+          <div id="ikm-panel-OVERVIEW" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs animate-view">
+            <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 space-y-1 interactive-card">
+              <span class="text-[var(--muted-foreground)]">Total Energy Consumption (30d)</span>
+              <p id="kpi-kwh" class="text-xl font-extrabold">41.820 kWh</p>
+              <span id="kpi-kwh-sub" class="text-[#16A36A] font-semibold block">↓ 14,48% vs 48.900 kWh baseline</span>
+            </div>
+            <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 space-y-1 interactive-card">
+              <span class="text-[var(--muted-foreground)]">Est. Electricity Cost</span>
+              <p id="kpi-cost" class="text-xl font-extrabold">Rp60.417.354</p>
+              <span class="text-[var(--muted-foreground)] block">PLN I-3 Tariff: Rp1.444,70/kWh</span>
+            </div>
+            <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 space-y-1 interactive-card">
+              <span class="text-[var(--muted-foreground)]">Verified Energy Savings</span>
+              <p id="kpi-savings" class="text-xl font-extrabold text-[#16A36A]">Rp9.717.052</p>
+              <span class="text-[var(--muted-foreground)] block">+Rp511.424 ESTIMATED (CT-Only)</span>
+            </div>
+            <div class="bg-[var(--card)] border border-[#16A36A]/40 rounded-2xl p-4 space-y-1 interactive-card">
+              <span class="font-semibold">Provisional Green Score &amp; CO₂e</span>
+              <p id="kpi-score" class="text-xl font-extrabold">83/100 (Grade A)</p>
+              <span id="kpi-co2" class="text-[#16A36A] font-semibold block">5.522,4 kgCO₂e Avoided</span>
+            </div>
+          </div>
+
+          <div id="ikm-panel-MACHINES" class="hidden bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 text-xs space-y-2.5 shadow-2xs animate-view">
+            <h3 class="font-bold text-sm">Monitored Industrial Machines &amp; IoT Gateways</h3>
+            <div class="space-y-2">
+              <div class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] interactive-card flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <span class="font-semibold">MCH-DYE-01 • Jet Dyeing Line #1 (3P 380V)</span>
+                <strong class="text-[#16A36A]">12.964,2 kWh (VERIFIED)</strong>
+              </div>
+              <div class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] interactive-card flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <span class="font-semibold">MCH-CMP-02 • Screw Compressor VFD (3P 380V)</span>
+                <strong class="text-[#16A36A]">14.218,8 kWh (VERIFIED)</strong>
+              </div>
+              <div class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] interactive-card flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <span class="font-semibold">MCH-WVG-03 • Air-Jet Weaving Looms (3P 380V)</span>
+                <strong class="text-[#16A36A]">8.364,0 kWh (VERIFIED)</strong>
+              </div>
+              <div class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] interactive-card flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <span class="font-semibold">MCH-STN-04 • Stenter Exhaust Bank (1P 220V)</span>
+                <strong class="text-[#16A36A]">4.182,0 kWh (VERIFIED)</strong>
+              </div>
+              <div class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] interactive-card flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <span class="font-semibold">MCH-PMP-05 • WWTP Pump #2 (NodeMCU CT-Only)</span>
+                <strong class="text-amber-600">2.091,0 kWh (ESTIMATED)</strong>
+              </div>
+            </div>
+          </div>
+
+          <div id="ikm-panel-GREENSCORE" class="hidden bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 text-xs space-y-3 shadow-2xs animate-view">
+            <div class="flex flex-wrap justify-between items-center gap-2 border-b border-[var(--border)] pb-2.5">
+              <span class="font-bold text-sm">Provisional Green Score Breakdown (v1.2-2026)</span>
+              <span class="rounded-lg bg-[#123B2A] text-white px-2.5 py-1 font-bold">83/100 • Grade A</span>
+            </div>
+            <div class="space-y-2">
+              <div class="flex justify-between items-center bg-[var(--content)] p-2.5 rounded-lg interactive-card"><span>1. Energy Efficiency Improvement (25%)</span><strong>80/100</strong></div>
+              <div class="flex justify-between items-center bg-[var(--content)] p-2.5 rounded-lg interactive-card"><span>2. Energy Consumption Stability (20%)</span><strong>93/100</strong></div>
+              <div class="flex justify-between items-center bg-[var(--content)] p-2.5 rounded-lg interactive-card"><span>3. Data Completeness &amp; Reliability (20%)</span><strong>92/100</strong></div>
+              <div class="flex justify-between items-center bg-[var(--content)] p-2.5 rounded-lg interactive-card"><span>4. Sustainability Performance (20%)</span><strong>80/100</strong></div>
+              <div class="flex justify-between items-center bg-[var(--content)] p-2.5 rounded-lg interactive-card"><span>5. Consistency of Monitoring (15%)</span><strong>100/100</strong></div>
+            </div>
+          </div>
+
+          <div id="ikm-panel-FINANCING" class="hidden bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 space-y-3 text-xs shadow-2xs animate-view">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 class="font-bold text-sm">Data-Sharing Consent Control</h3>
+                <p class="text-[var(--muted-foreground)]">Partner Bank: Bank Nusantara Hijau — Green Lending Desk</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="consent-badge" class="rounded-lg bg-emerald-500/20 text-[#16A36A] px-3 py-1.5 font-bold">ACTIVE</span>
+                <button onclick="toggleConsent()" id="consent-btn" class="rounded-xl bg-red-600 hover:bg-red-700 text-white px-3.5 py-2 font-bold cursor-pointer transition-colors">
+                  Revoke Consent
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 3: PARTNER BANK PORTAL -->
+        <section id="view-BANK" class="hidden space-y-4 text-xs animate-view">
+          <div class="rounded-2xl bg-[#14243A] text-white p-4 sm:p-5 space-y-1">
+            <span class="text-emerald-400 font-bold uppercase block">Partner Bank Underwriting Portal</span>
+            <h2 class="text-base font-bold">Consented IKM Green Financing Pipeline</h2>
+            <p class="text-slate-300">Menampilkan hanya IKM dengan status persetujuan (DataSharingConsent) ACTIVE.</p>
+          </div>
+
+          <div id="bank-sinar-card" class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 space-y-3 shadow-2xs interactive-card">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 border-b border-[var(--border)] pb-3">
+              <div>
+                <span class="font-mono text-[#16A36A] font-bold block">#APP-2026-001 • Consent ACTIVE</span>
+                <h3 id="bank-company-heading" class="text-sm font-bold mt-0.5">PT Sinar Tekstil Mandiri (DEMO) — Capex Rp450.000.000</h3>
+              </div>
+              <span id="bank-app-status-badge" class="self-start sm:self-auto rounded-lg bg-blue-500/15 text-blue-600 px-3 py-1 font-bold">Under Review</span>
+            </div>
+            <div class="grid grid-cols-1 sm:flex sm:flex-wrap gap-2">
+              <button onclick="updateBankStatus('Under Review')" class="px-3 py-2 rounded-xl border border-[var(--border)] hover:border-[#16A36A] font-bold cursor-pointer transition-colors">Under Review</button>
+              <button onclick="updateBankStatus('Approved by Bank')" class="px-3 py-2 rounded-xl bg-[#16A36A] hover:bg-emerald-600 text-white font-bold cursor-pointer transition-colors">Approve by Bank</button>
+              <button onclick="updateBankStatus('Disbursed')" class="px-3 py-2 rounded-xl bg-[#123B2A] hover:bg-emerald-950 text-white font-bold cursor-pointer transition-colors">Mark Disbursed</button>
+            </div>
+          </div>
+
+          <div id="bank-revoked-alert" class="hidden bg-[var(--card)] border border-red-400 rounded-2xl p-4 text-red-600 font-semibold">
+            Access Denied: IKM telah mencabut persetujuan pembagian data (REVOKED).
+          </div>
+        </section>
+
+        <!-- VIEW 4: ADMIN PORTAL -->
+        <section id="view-ADMIN" class="hidden bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 space-y-3 text-xs shadow-2xs animate-view">
+          <h2 class="text-sm font-bold">EcoSME Admin — Immutable System Audit Logs</h2>
+          <div id="admin-audit-list" class="space-y-2 font-mono">
+            <div class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] break-words interactive-card">[2026-11-09] METHODOLOGY_PUBLISHED • Nadia Putri (ECOSME_ADMIN)</div>
+            <div class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] break-words interactive-card">[2026-10-22] APPLICATION_STATUS_UPDATED • Arief Rahman (BANK_OFFICER)</div>
+            <div class="rounded-xl bg-[var(--content)] p-3 border border-[var(--border)] break-words interactive-card">[2026-10-20] CONSENT_GRANTED • Ir. Budi Santoso (IKM_OWNER)</div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- RIGHT SIDEBAR: DYNAMIC PERSONAL & COMPANY DATA DRAWER                 -->
+      <!-- ===================================================================== -->
+      <div
+        id="profile-drawer-backdrop"
+        onclick="closeProfileDrawerMobile(event)"
+        class="hidden lg:block lg:col-span-4 fixed inset-0 z-50 bg-black/50 backdrop-blur-xs lg:static lg:bg-transparent lg:backdrop-blur-none sidebar-panel"
+      >
+        <aside
+          id="profile-company-sidebar"
+          onclick="event.stopPropagation()"
+          class="ml-auto h-full w-full max-w-md lg:max-w-none lg:h-auto overflow-y-auto bg-[var(--card)] lg:border-2 border-l-2 border-[#16A36A] lg:rounded-2xl p-4 sm:p-5 space-y-4 shadow-2xl lg:shadow-md text-xs sidebar-panel"
+        >
+          <!-- Dynamic Header with Animated Status Dot -->
+          <div class="rounded-xl bg-[#123B2A] text-white p-3.5 flex items-center justify-between sticky top-0 z-10 shadow-sm">
+            <div class="flex items-center gap-2.5">
+              <div id="sidebar-avatar-badge" class="h-9 w-9 rounded-xl bg-[#16A36A] flex items-center justify-center font-extrabold text-xs text-white pulse-ring">
+                BS
+              </div>
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
+                  <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                  Sidebar Profil &amp; Legalitas
+                </span>
+                <h2 class="text-sm font-extrabold">Data Personal Diri &amp; Perusahaan</h2>
+              </div>
+            </div>
+            <button
+              type="button"
+              onclick="toggleProfileDrawer()"
+              class="rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 px-2.5 py-1.5 text-xs font-bold text-white transition-all cursor-pointer"
+            >
+              Tutup ✕
+            </button>
+          </div>
+
+          <!-- Dynamic Profile Completeness & Green Readiness Meter -->
+          <div class="rounded-xl bg-[#E8F7F0] border border-[#16A36A]/40 p-3 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-[#123B2A]">Kelengkapan Kesiapan Profil Hijau</span>
+              <span id="profile-completeness-pct" class="font-extrabold text-[#16A36A]">100% Lengkap</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-white overflow-hidden border border-emerald-200">
+              <div id="profile-completeness-bar" class="h-full bg-[#16A36A] transition-all duration-500 rounded-full" style="width: 100%"></div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 pt-0.5">
+              <span class="rounded bg-white px-2 py-0.5 text-xs font-semibold text-[#123B2A] border border-emerald-200">✓ KYC Personal</span>
+              <span class="rounded bg-white px-2 py-0.5 text-xs font-semibold text-[#123B2A] border border-emerald-200">✓ NPWP &amp; NIB</span>
+              <span class="rounded bg-white px-2 py-0.5 text-xs font-semibold text-[#16A36A] border border-emerald-200">✓ Sinkronisasi Live</span>
+            </div>
+          </div>
+
+          <!-- Interactive Quick Role Preset Cards -->
+          <div class="space-y-1.5">
+            <label class="block font-bold text-[var(--muted-foreground)]">
+              Ganti Cepat Profil Akun (Klik atau Pilih):
+            </label>
+            <select id="preset-profile-select" onchange="loadProfilePreset()" class="input-dynamic w-full rounded-xl border border-[var(--border)] bg-[var(--content)] px-3 py-2.5 font-bold cursor-pointer">
+              <option value="SINAR">1. IKM: Ir. Budi Santoso — PT Sinar Tekstil Mandiri</option>
+              <option value="KARYA">2. IKM: Ratna Dewi, S.T. — CV Karya Logam Presisi</option>
+              <option value="BANK">3. Bank: Arief Rahman, CFA — Bank Nusantara Hijau</option>
+              <option value="ADMIN">4. Admin: Nadia Putri, M.T. — EcoSME Platform HQ</option>
+            </select>
+          </div>
+
+          <!-- Tabs: Data Personal Diri vs Data Perusahaan -->
+          <div class="grid grid-cols-2 gap-1.5 bg-[var(--content)] p-1 rounded-xl border border-[var(--border)]">
+            <button type="button" onclick="switchProfileTab('PERSONAL')" id="ptab-PERSONAL" class="py-2 rounded-lg font-bold bg-[#123B2A] text-white shadow-xs transition-all cursor-pointer">
+              1. Data Personal Diri
+            </button>
+            <button type="button" onclick="switchProfileTab('COMPANY')" id="ptab-COMPANY" class="py-2 rounded-lg font-bold text-[var(--muted-foreground)] hover:text-[#123B2A] transition-all cursor-pointer">
+              2. Data Perusahaan
+            </button>
+          </div>
+
+          <!-- Form with Real-Time Typing Sync (oninput="liveSyncTyping()") -->
+          <form onsubmit="saveProfileAndCompanyData(event)" class="space-y-3">
+            <!-- TAB 1: DATA PERSONAL DIRI -->
+            <div id="pform-PERSONAL" class="space-y-2.5 animate-view">
+              <div>
+                <label class="block font-semibold mb-1">Nama Lengkap Personal <span class="text-[#16A36A] font-normal">(Live Sync)</span></label>
+                <input id="inp-personal-name" oninput="liveSyncTyping()" type="text" required value="Ir. Budi Santoso" class="input-dynamic w-full rounded-xl border border-[var(--border)] bg-[var(--content)] px-3 py-2 font-semibold" />
+              </div>
+              <div>
+                <label class="block font-semibold mb-1">Jabatan / Posisi</label>
+                <input id="inp-personal-title" oninput="liveSyncTyping()" type="text" required value="Managing Director &amp; Plant Owner" class="input-dynamic w-full rounded-xl border border-[var(--border)] bg-[var(--content)] px-3 py-2" />
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block font-semibold mb-1">NIK / ID Personal</label>
+                  <input id="inp-personal-nik" oninput="liveSyncTyping()" type="text" value="3204281904780002" class="input-dynamic w-full rounded-xl border border-[var(--border)] bg-[var(--content)] px-3 py-2 font-mono" />
+                </div>
+                <div>
+                  <label class="block font-semibold mb-1">Peran Akses (RBAC)</label>
+                  <input id="inp-personal-role" type="text" readonly value="IKM_OWNER" class="w-full rounded-xl border border-[var(--border)] bg-[var(--content)] px-3 py-2 font-mono font-bold text-[#16A36A]" />
+                </div>
+              </div>
+              <div>
+                <label class="block font-semibold mb-1">Email Personal / Kerja</label>
+                <input id="inp-personal-email" oninput="liveSyncTyping()" type="email" required value="budi.santoso@sinartekstil-demo.co.id" class="input-dynamic w-full rounded-xl border border-[var(--border)] bg-[var(--content)] px-3 py-2 font-mono" />
+              </div>
+              <div>
+                <label class="block font-semibold mb-1">No. Handphone / WhatsApp</label>
+                <input id="inp-personal-phone" oninput="liveSyncTyping()" type="text" value="+62 812 2049 8810" class="input-dynamic w-full rounded-xl border border-[var(--border)] bg-[var(--content)] px-3 py-2" />
+              </div>
+            </div>
+
+            <!-- TAB 2: DATA PERUSAHAAN -->
+            <div id="pform-COMPANY" class="hidden space-y-2.5 animate-view">
+              <div>
+                <label class="block font-semibold mb-1">Nama Legal Perusahaan / Pabrik <span class="text-[#16A36A] font-normal">(Live Sync)</span></label>
+                <input id="inp-company-name" oninput="liveSyncTyping()" type="text" required value="PT Sinar Tekstil Mandiri (DEMO)" class="input-dynamic w-full rounded-xl border border-[var(--border)] bg-[var(--content)] px-3 py-2 font-semibold" />
+              </div>
+              <div>
+                <label class="block font-semibold mb-1">Sektor Industri (ISIC / KBLI)</label>
+                <input id="inp-company-sector" oninput="liveSyncTyping()" type="text" value="Textile Dyeing &amp; Weaving (ISIC 131)" class="input-dynamic w-full rounded-xl border border-[var(--border)] bg-[var(--content)] px-3 py-2" />
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block font-semibold mb-1">NPWP Perusahaan</label>
+                  <input id="inp-company-npwp" oninput="liveSyncTyping()" type="text" value="01.842.910.4-429.000" class="input-dynamic w-full rounded-xl border border-[var(--border)] bg-[var(--content)] px-3 py-2 font-mono" />
+                </div>
+                <div>
+                  <label class="block font-semibold mb-1">Nomor Izin (NIB)</label>
+                  <input id="inp-company-nib" oninput="liveSyncTyping()" type="text" value="9120300481920" class="input-dynamic w-full rounded-xl border border-[var(--border)] bg-[var(--content)] px-3 py-2 font-mono" />
+                </div>
+              </div>
+              <div>
+                <label class="block font-semibold mb-1">Alamat Lengkap Fasilitas / Pabrik</label>
+                <input id="inp-company-address" oninput="liveSyncTyping()" type="text" value="Kawasan Industri Rancaekek Km 24.5, Kab. Bandung" class="input-dynamic w-full rounded-xl border border-[var(--border)] bg-[var(--content)] px-3 py-2" />
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block font-semibold mb-1">Golongan Tarif PLN</label>
+                  <input id="inp-company-pln" oninput="liveSyncTyping()" type="text" value="I-3 / TM (&gt;200 kVA)" class="input-dynamic w-full rounded-xl border border-[var(--border)] bg-[var(--content)] px-3 py-2" />
+                </div>
+                <div>
+                  <label class="block font-semibold mb-1">Daya Terpasang (kVA)</label>
+                  <input id="inp-company-kva" oninput="liveSyncTyping()" type="number" value="240" class="input-dynamic w-full rounded-xl border border-[var(--border)] bg-[var(--content)] px-3 py-2 font-bold" />
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full rounded-xl bg-[#16A36A] hover:bg-emerald-600 active:scale-[0.99] text-white py-3 font-extrabold transition-all shadow-sm hover:shadow-md cursor-pointer">
+              Simpan Data Personal &amp; Perusahaan
+            </button>
+
+            <div id="profile-save-toast" class="hidden rounded-xl bg-emerald-500/15 border border-[#16A36A]/40 p-3 text-[#16A36A] font-bold text-center animate-view">
+              ✓ Data Personal &amp; Perusahaan berhasil diperbarui!
+            </div>
+          </form>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE BOTTOM NAVIGATION BAR (Visible on Smartphones & Tablets < 1024px) -->
+  <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#123B2A] text-white border-t border-emerald-800 px-2 py-1.5 shadow-2xl">
+    <div class="grid grid-cols-5 gap-1 max-w-md mx-auto text-center">
+      <button onclick="switchPortal('PUBLIC')" id="mobnav-PUBLIC" class="flex flex-col items-center justify-center py-1.5 rounded-lg bg-[#16A36A] text-white text-xs font-bold">
+        <span>🏠</span>
+        <span class="mt-0.5">Home</span>
+      </button>
+      <button onclick="switchPortal('IKM')" id="mobnav-IKM" class="flex flex-col items-center justify-center py-1.5 rounded-lg text-emerald-100 text-xs font-semibold">
+        <span>⚡</span>
+        <span class="mt-0.5">IKM</span>
+      </button>
+      <button onclick="switchPortal('BANK')" id="mobnav-BANK" class="flex flex-col items-center justify-center py-1.5 rounded-lg text-emerald-100 text-xs font-semibold">
+        <span>🏦</span>
+        <span class="mt-0.5">Bank</span>
+      </button>
+      <button onclick="openLeftSidebarMobile()" id="mobnav-MENU" class="flex flex-col items-center justify-center py-1.5 rounded-lg text-emerald-100 text-xs font-semibold">
+        <span>🧭</span>
+        <span class="mt-0.5">Menu</span>
+      </button>
+      <button onclick="openProfileDrawerMobile()" id="mobnav-PROFILE" class="flex flex-col items-center justify-center py-1.5 rounded-lg bg-emerald-900/80 border border-emerald-500/50 text-emerald-200 text-xs font-bold">
+        <span>👤</span>
+        <span class="mt-0.5">Profil</span>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    let leftSidebarOpen = window.innerWidth >= 1024;
+    let profileDrawerOpen = window.innerWidth >= 1024;
+    let sinarConsentActive = true;
+
+    const presets = {
+      SINAR: {
+        initials: 'BS',
+        personalName: 'Ir. Budi Santoso',
+        personalTitle: 'Managing Director & Plant Owner',
+        personalNik: '3204281904780002',
+        personalRole: 'IKM_OWNER',
+        personalEmail: 'budi.santoso@sinartekstil-demo.co.id',
+        personalPhone: '+62 812 2049 8810',
+        companyName: 'PT Sinar Tekstil Mandiri (DEMO)',
+        companySector: 'Textile Dyeing & Weaving (ISIC 131)',
+        companyNpwp: '01.842.910.4-429.000',
+        companyNib: '9120300481920',
+        companyAddress: 'Kawasan Industri Rancaekek Km 24.5, Kab. Bandung',
+        companyPln: 'I-3 / TM (>200 kVA)',
+        companyKva: 240
+      },
+      KARYA: {
+        initials: 'RD',
+        personalName: 'Ratna Dewi, S.T.',
+        personalTitle: 'Operations Director',
+        personalNik: '3216095208840001',
+        personalRole: 'IKM_OWNER',
+        personalEmail: 'ratna.dewi@karyalogam-demo.co.id',
+        personalPhone: '+62 811 9823 4410',
+        companyName: 'CV Karya Logam Presisi (DEMO)',
+        companySector: 'Metal Stamping & Automotive Components (ISIC 259)',
+        companyNpwp: '02.419.882.1-413.000',
+        companyNib: '8120109283711',
+        companyAddress: 'Jl. Jababeka XII Blok W-18, Cikarang, Bekasi',
+        companyPln: 'B-3 / I-2 Medium Industrial',
+        companyKva: 165
+      },
+      BANK: {
+        initials: 'AR',
+        personalName: 'Arief Rahman, CFA',
+        personalTitle: 'VP Green & Sustainable SME Financing',
+        personalNik: '3174041102820005',
+        personalRole: 'BANK_OFFICER',
+        personalEmail: 'arief.rahman@banknusantara-demo.co.id',
+        personalPhone: '+62 21 5150 8800',
+        companyName: 'Bank Nusantara Hijau — Green Desk (DEMO)',
+        companySector: 'Commercial Banking & Sustainable Finance',
+        companyNpwp: '01.001.202.3-091.000',
+        companyNib: '1000293847561',
+        companyAddress: 'Menara Nusantara Lt. 22, Sudirman CBD, Jakarta',
+        companyPln: 'B-3 Commercial',
+        companyKva: 500
+      },
+      ADMIN: {
+        initials: 'NP',
+        personalName: 'Nadia Putri, M.T.',
+        personalTitle: 'Lead IoT & Methodology Administrator',
+        personalNik: '3273084410890003',
+        personalRole: 'ECOSME_ADMIN',
+        personalEmail: 'nadia.putri@ecosme.id',
+        personalPhone: '+62 21 2990 1400',
+        companyName: 'EcoSME Platform Governance HQ',
+        companySector: 'Industrial Energy SaaS & Climate Fintech',
+        companyNpwp: '04.991.221.0-429.000',
+        companyNib: '9120998877665',
+        companyAddress: 'Green Tech Hub Blok B-4, Bandung / Jakarta',
+        companyPln: 'B-2 Commercial',
+        companyKva: 66
+      }
+    };
+
+    function recomputeDesktopGridCols() {
+      const mainCol = document.getElementById('main-workspace-col');
+      let cols = 12;
+      if (leftSidebarOpen) cols -= 3;
+      if (profileDrawerOpen) cols -= 4;
+      mainCol.className = 'lg:col-span-' + cols + ' space-y-4 sm:space-y-5 transition-all duration-300';
+    }
+
+    function toggleLeftSidebar() {
+      const backdrop = document.getElementById('left-sidebar-backdrop');
+      if (window.innerWidth >= 1024) {
+        leftSidebarOpen = !leftSidebarOpen;
+        backdrop.classList.toggle('lg:hidden', !leftSidebarOpen);
+        recomputeDesktopGridCols();
+      } else {
+        backdrop.classList.toggle('hidden');
+      }
+    }
+
+    function openLeftSidebarMobile() {
+      document.getElementById('left-sidebar-backdrop').classList.remove('hidden');
+    }
+
+    function closeLeftSidebarMobile() {
+      if (window.innerWidth < 1024) {
+        document.getElementById('left-sidebar-backdrop').classList.add('hidden');
+      }
+    }
+
+    function toggleProfileDrawer() {
+      const backdrop = document.getElementById('profile-drawer-backdrop');
+      if (window.innerWidth >= 1024) {
+        profileDrawerOpen = !profileDrawerOpen;
+        backdrop.classList.toggle('lg:hidden', !profileDrawerOpen);
+        recomputeDesktopGridCols();
+      } else {
+        backdrop.classList.toggle('hidden');
+      }
+    }
+
+    function openProfileDrawerMobile() {
+      const backdrop = document.getElementById('profile-drawer-backdrop');
+      if (window.innerWidth >= 1024) {
+        profileDrawerOpen = true;
+        backdrop.classList.remove('lg:hidden');
+        recomputeDesktopGridCols();
+      } else {
+        backdrop.classList.remove('hidden');
+      }
+    }
+
+    function closeProfileDrawerMobile() {
+      if (window.innerWidth < 1024) {
+        document.getElementById('profile-drawer-backdrop').classList.add('hidden');
+      }
+    }
+
+    function selectLeftNav(portal, targetKey) {
+      switchPortal(portal);
+      if (portal === 'IKM' && targetKey.startsWith('IKM_')) {
+        switchIkmSub(targetKey.replace('IKM_', ''));
+      }
+      document.querySelectorAll('#left-dynamic-menu button').forEach((b) => {
+        b.classList.remove('nav-item-active');
+      });
+      const activeBtn = document.getElementById('lnav-' + targetKey);
+      if (activeBtn) activeBtn.classList.add('nav-item-active');
+
+      const sec = document.getElementById('sec-' + targetKey);
+      if (sec) {
+        sec.classList.remove('flash-update');
+        void sec.offsetWidth;
+        sec.classList.add('flash-update');
+      }
+      closeLeftSidebarMobile();
+    }
+
+    function simulateLiveTelemetryPulse() {
+      const voltages = [379.2, 380.4, 381.1, 382.0, 378.8];
+      const powers = [81.4, 84.6, 87.2, 79.5, 85.9];
+      const pfs = [0.91, 0.92, 0.94, 0.90, 0.93];
+      const idx = Math.floor(Math.random() * voltages.length);
+      const pct = Math.min(95, Math.max(55, Math.round((powers[idx] / 110) * 100)));
+
+      document.getElementById('sidebar-live-badge').textContent = voltages[idx].toFixed(1).replace('.', ',') + ' V';
+      document.getElementById('sidebar-live-kw').textContent = powers[idx].toFixed(1).replace('.', ',') + ' kW';
+      document.getElementById('sidebar-live-pf').textContent = pfs[idx].toFixed(2).replace('.', ',');
+      document.getElementById('sidebar-live-bar').style.width = pct + '%';
+    }
+
+    function switchProfileTab(tab) {
+      document.getElementById('pform-PERSONAL').classList.toggle('hidden', tab !== 'PERSONAL');
+      document.getElementById('pform-COMPANY').classList.toggle('hidden', tab !== 'COMPANY');
+      document.getElementById('ptab-PERSONAL').className =
+        tab === 'PERSONAL'
+          ? 'py-2 rounded-lg font-bold bg-[#123B2A] text-white shadow-xs transition-all cursor-pointer'
+          : 'py-2 rounded-lg font-bold text-[var(--muted-foreground)] hover:text-[#123B2A] transition-all cursor-pointer';
+      document.getElementById('ptab-COMPANY').className =
+        tab === 'COMPANY'
+          ? 'py-2 rounded-lg font-bold bg-[#123B2A] text-white shadow-xs transition-all cursor-pointer'
+          : 'py-2 rounded-lg font-bold text-[var(--muted-foreground)] hover:text-[#123B2A] transition-all cursor-pointer';
+    }
+
+    function loadProfilePreset() {
+      const key = document.getElementById('preset-profile-select').value;
+      const p = presets[key];
+      document.getElementById('inp-personal-name').value = p.personalName;
+      document.getElementById('inp-personal-title').value = p.personalTitle;
+      document.getElementById('inp-personal-nik').value = p.personalNik;
+      document.getElementById('inp-personal-role').value = p.personalRole;
+      document.getElementById('inp-personal-email').value = p.personalEmail;
+      document.getElementById('inp-personal-phone').value = p.personalPhone;
+      document.getElementById('inp-company-name').value = p.companyName;
+      document.getElementById('inp-company-sector').value = p.companySector;
+      document.getElementById('inp-company-npwp').value = p.companyNpwp;
+      document.getElementById('inp-company-nib').value = p.companyNib;
+      document.getElementById('inp-company-address').value = p.companyAddress;
+      document.getElementById('inp-company-pln').value = p.companyPln;
+      document.getElementById('inp-company-kva').value = p.companyKva;
+      liveSyncTyping();
+    }
+
+    function liveSyncTyping() {
+      applyProfileToUi();
+      const fields = [
+        'inp-personal-name',
+        'inp-personal-title',
+        'inp-personal-nik',
+        'inp-personal-email',
+        'inp-company-name',
+        'inp-company-sector',
+        'inp-company-npwp',
+        'inp-company-nib'
+      ];
+      const filled = fields.filter((id) => document.getElementById(id).value.trim().length > 0).length;
+      const pct = Math.round((filled / fields.length) * 100);
+      document.getElementById('profile-completeness-pct').textContent = pct + '% Lengkap';
+      document.getElementById('profile-completeness-bar').style.width = pct + '%';
+
+      const grid = document.getElementById('live-profile-cards-grid');
+      if (grid) {
+        grid.classList.remove('flash-update');
+        void grid.offsetWidth;
+        grid.classList.add('flash-update');
+      }
+    }
+
+    function applyProfileToUi() {
+      const pName = document.getElementById('inp-personal-name').value || 'User';
+      const pTitle = document.getElementById('inp-personal-title').value;
+      const cName = document.getElementById('inp-company-name').value || 'Perusahaan IKM';
+      const cSector = document.getElementById('inp-company-sector').value;
+      const cNpwp = document.getElementById('inp-company-npwp').value;
+      const cNib = document.getElementById('inp-company-nib').value;
+      const cPln = document.getElementById('inp-company-pln').value;
+      const cKva = document.getElementById('inp-company-kva').value;
+
+      const initials = pName
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((w) => w[0].toUpperCase())
+        .join('');
+
+      document.getElementById('header-avatar').textContent = initials || 'U';
+      document.getElementById('sidebar-avatar-badge').textContent = initials || 'U';
+      document.getElementById('header-user-name').textContent = pName;
+      document.getElementById('header-company-name').textContent = cName;
+      document.getElementById('mobile-banner-user').textContent = pName;
+      document.getElementById('mobile-banner-company').textContent = cName;
+      document.getElementById('hero-company-badge').textContent = cName;
+
+      document.getElementById('card-personal-name').textContent = pName;
+      document.getElementById('card-personal-title').textContent = pTitle;
+      document.getElementById('card-company-name').textContent = cName;
+      document.getElementById('card-company-sector').textContent = cSector;
+      document.getElementById('card-company-npwp').textContent = cNpwp;
+      document.getElementById('card-company-nib').textContent = 'NIB: ' + cNib;
+      document.getElementById('card-company-pln').textContent = cPln;
+      document.getElementById('card-company-kva').textContent = 'Daya Terpasang: ' + cKva + ' kVA';
+      document.getElementById('ikm-org-heading').textContent = cName;
+      document.getElementById('bank-company-heading').textContent = cName + ' — Capex Rp450.000.000';
+    }
+
+    function saveProfileAndCompanyData(e) {
+      e.preventDefault();
+      liveSyncTyping();
+      const toast = document.getElementById('profile-save-toast');
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+        if (window.innerWidth < 1024) {
+          document.getElementById('profile-drawer-backdrop').classList.add('hidden');
+        }
+      }, 1200);
+    }
+
+    function switchPortal(portal) {
+      const titles = {
+        PUBLIC: ['1. Public Website', 'Ringkasan nilai bisnis, profil terhubung, dan 6 tahapan alur kerja EcoSME.'],
+        IKM: ['2. IKM Dashboard', 'Pantau konsumsi kWh mesin, penghematan terverifikasi, dan Green Score.'],
+        BANK: ['3. Partner Bank Portal', 'Tinjau pipeline pembiayaan hijau IKM yang telah memberikan persetujuan.'],
+        ADMIN: ['4. Admin Portal', 'Kelola metodologi Green Score, perangkat IoT, dan audit log sistem.']
+      };
+      document.getElementById('left-sidebar-portal-title').textContent = titles[portal][0];
+      document.getElementById('left-sidebar-portal-desc').textContent = titles[portal][1];
+
+      ['PUBLIC', 'IKM', 'BANK', 'ADMIN'].forEach((p) => {
+        document.getElementById('view-' + p).classList.toggle('hidden', p !== portal);
+        const btn = document.getElementById('tab-' + p);
+        btn.className =
+          p === portal
+            ? 'flex-1 min-w-[125px] px-3 py-2 rounded-lg text-xs font-bold bg-[#16A36A] text-white shadow-xs whitespace-nowrap transition-all cursor-pointer'
+            : 'flex-1 min-w-[125px] px-3 py-2 rounded-lg text-xs font-bold text-emerald-100 hover:text-white hover:bg-white/5 whitespace-nowrap transition-all cursor-pointer';
+
+        const mobBtn = document.getElementById('mobnav-' + p);
+        if (mobBtn) {
+          mobBtn.className =
+            p === portal
+              ? 'flex flex-col items-center justify-center py-1.5 rounded-lg bg-[#16A36A] text-white text-xs font-bold'
+              : 'flex flex-col items-center justify-center py-1.5 rounded-lg text-emerald-100 text-xs font-semibold';
+        }
+      });
+    }
+
+    function switchIkmSub(sub) {
+      ['OVERVIEW', 'MACHINES', 'GREENSCORE', 'FINANCING'].forEach((s) => {
+        document.getElementById('ikm-panel-' + s).classList.toggle('hidden', s !== sub);
+        const btn = document.getElementById('ikm-sub-' + s);
+        btn.className =
+          s === sub
+            ? 'px-3 py-2 rounded-xl font-bold bg-[#123B2A] text-white cursor-pointer transition-all'
+            : 'px-3 py-2 rounded-xl font-bold border border-[var(--border)] hover:border-[#16A36A] cursor-pointer transition-all';
+      });
+    }
+
+    function toggleConsent() {
+      sinarConsentActive = !sinarConsentActive;
+      document.getElementById('consent-badge').textContent = sinarConsentActive ? 'ACTIVE' : 'REVOKED';
+      document.getElementById('bank-sinar-card').classList.toggle('hidden', !sinarConsentActive);
+      document.getElementById('bank-revoked-alert').classList.toggle('hidden', sinarConsentActive);
+    }
+
+    function updateBankStatus(newStatus) {
+      document.getElementById('bank-app-status-badge').textContent = newStatus;
+    }
+  </script>
+</body>
+</html>
