@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { AlertTriangle, Bell, CheckCircle2, ShieldAlert, Siren } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Factory, FlaskConical, ShieldAlert, Siren } from "lucide-react";
 import { requireRole } from "@/lib/auth/session";
 import { getAlerts, getIkmContext, measuredProvenance } from "@/lib/services/ikm";
+import { RANGE_OPTIONS } from "@/lib/time";
 import { fmtDateTime } from "@/lib/utils";
 import { PageHeader } from "@/components/layout/page-header";
+import { RangeSelect } from "@/components/filters/filters";
 import { KpiCard } from "@/components/data/kpi-card";
+import { Callout } from "@/components/ui/feedback";
 import {
   AlertsDimensionsView,
   type AlertsDimensionKey,
@@ -34,21 +37,34 @@ export default async function AlertsPage({
     <>
       <PageHeader
         eyebrow={
-          <span className="inline-flex items-center gap-1.5">
-            <Bell className="size-3.5" aria-hidden /> Deteksi Anomali Berbasis Aturan (7 Hari Terakhir)
+          <span className="inline-flex flex-wrap items-center gap-2">
+            <Factory className="size-3.5" aria-hidden />
+            {ctx.business.name} · {ctx.business.sector} · {ctx.business.city}
           </span>
         }
-        title="Peringatan & Tindak Lanjut Operasional"
+        title="Peringatan"
         description={
           <>
-            Pemantauan otomatis beban lebih, faktor daya rendah, konsumsi di luar jam operasional, dan konektivitas sensor s.d.{" "}
-            <strong className="font-semibold text-ink">{fmtDateTime(alertsData.window.to)} WIB</strong>.
+            Deteksi anomali beban, faktor daya rendah, dan status perangkat untuk{" "}
+            <strong className="font-semibold text-ink">7 hari terakhir</strong>. Pembaruan data terakhir{" "}
+            <time dateTime={ctx.lastUpdate.toISOString()} className="font-medium text-ink">
+              {fmtDateTime(ctx.lastUpdate)} WIB
+            </time>
+            .
           </>
         }
+        actions={<RangeSelect value="7d" options={RANGE_OPTIONS} />}
       />
 
+      {ctx.mode === "demo" && (
+        <Callout tone="info" icon={<FlaskConical />} className="mb-6">
+          <strong>Lingkungan DEMO.</strong> Seluruh pembacaan energi pada dashboard ini adalah data simulasi untuk usaha fiktif dan bukan pembacaan sensor nyata.
+          Biaya dan emisi merupakan estimasi berdasarkan asumsi yang dapat diubah di Pengaturan.
+        </Callout>
+      )}
+
       {/* Top KPI Summary */}
-      <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mb-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard
           label="Peringatan Aktif"
           icon={<Siren />}

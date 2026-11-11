@@ -1,22 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   Activity,
   BarChart3,
   Clock,
   Cpu,
-  Flame,
-  Gauge,
   LayoutGrid,
   MapPin,
-  Radio,
-  Router,
   Sparkles,
   Table2,
-  Wrench,
-  Zap,
 } from "lucide-react";
 import type { DeviceStatus, MachineCategory, Provenance } from "@/lib/domain/types";
 import { cn, fmtIdr, fmtIdrCompact, fmtNumber, fmtPct, fmtRelative } from "@/lib/utils";
@@ -26,7 +20,7 @@ import { Progress, StatusDot } from "@/components/ui/feedback";
 import { TimeSeriesChart } from "@/components/charts/time-series-chart";
 import { DonutChart } from "@/components/charts/donut-chart";
 import { HorizontalBarChart } from "@/components/charts/horizontal-bar-chart";
-import { MACHINE_COLORS, VIZ } from "@/components/charts/format";
+import { MACHINE_COLORS } from "@/components/charts/format";
 import { DataTable, type Column } from "@/components/data/data-table";
 
 export type MachinesDimensionKey = "overview" | "comparison" | "schedule" | "telemetry";
@@ -126,11 +120,13 @@ export function MachinesDimensionsView({
   const [selectedId, setSelectedId] = useState<string>(machines[0]?.id ?? "");
   const [compareMetric, setCompareMetric] = useState<"kwh" | "costIdr" | "peakLoadPct" | "runHours">("kwh");
 
-  useEffect(() => {
+  const [prevUrlDim, setPrevUrlDim] = useState(urlDim);
+  if (urlDim !== prevUrlDim) {
+    setPrevUrlDim(urlDim);
     if (urlDim && DIMENSIONS.some((d) => d.key === urlDim)) {
       setDim(urlDim);
     }
-  }, [urlDim]);
+  }
 
   function selectDimension(next: MachinesDimensionKey) {
     setDim(next);
@@ -292,7 +288,49 @@ export function MachinesDimensionsView({
       {/* DIMENSION 1: MACHINE MATRIX & INTERACTIVE INSPECTOR                */}
       {/* ================================================================== */}
       {dim === "overview" && (
-        <div className="space-y-5 animate-fade-in">
+        <div className="space-y-4 animate-fade-in">
+          {/* Top 2/3 + 1/3 Chart Row matching Overview Page Dimensions */}
+          <div className="grid gap-4 xl:grid-cols-3">
+            <Card className="xl:col-span-2">
+              <CardHeader
+                title="Tren Konsumsi Energi per Mesin"
+                subtitle={`${granularity === "hour" ? "Per jam" : "Per hari"} · pilih kartu mesin di bawah untuk bedah detail`}
+                actions={<ProvenanceBadge kind={provenance} />}
+              />
+              <CardBody>
+                <TimeSeriesChart
+                  ariaLabel="Grafik tren konsumsi energi seluruh mesin"
+                  data={trend}
+                  unit="kwh"
+                  granularity={granularity}
+                  series={machines.map((m, i) => ({
+                    key: m.id,
+                    label: m.name,
+                    color: MACHINE_COLORS[i % MACHINE_COLORS.length],
+                    type: "line",
+                  }))}
+                />
+              </CardBody>
+            </Card>
+            <Card>
+              <CardHeader title="Energi per Mesin" subtitle={rangeLabel} actions={<ProvenanceBadge kind={provenance} />} />
+              <CardBody>
+                <DonutChart
+                  ariaLabel="Distribusi energi per mesin"
+                  data={machines.map((m, i) => ({
+                    name: m.name,
+                    value: m.kwh,
+                    color: MACHINE_COLORS[i % MACHINE_COLORS.length],
+                  }))}
+                  unit="kwh"
+                  centerValue={fmtNumber(totalKwh)}
+                  centerLabel="kWh total"
+                  height={180}
+                />
+              </CardBody>
+            </Card>
+          </div>
+
           {/* Interactive Machine Cards Grid */}
           <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
             {machines.map((m, idx) => {

@@ -1,19 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
-  Activity,
-  AlertTriangle,
-  ArrowRight,
-  Bolt,
-  CheckCircle2,
   CircleDollarSign,
   Clock,
   Gauge,
   Layers,
-  Radio,
-  SlidersHorizontal,
   Sparkles,
   Sun,
   Sunset,
@@ -25,7 +18,7 @@ import { TARIFF_NOTE } from "@/lib/config";
 import { cn, fmtDateTime, fmtIdr, fmtIdrCompact, fmtNumber, fmtPct } from "@/lib/utils";
 import { Card, CardBody, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge, ProvenanceBadge } from "@/components/ui/badge";
-import { EmptyState, Progress } from "@/components/ui/feedback";
+import { Progress } from "@/components/ui/feedback";
 import { TimeSeriesChart } from "@/components/charts/time-series-chart";
 import { DonutChart } from "@/components/charts/donut-chart";
 import { HorizontalBarChart } from "@/components/charts/horizontal-bar-chart";
@@ -178,11 +171,13 @@ export function EnergyDimensionsView({
   const [elecParam, setElecParam] = useState<"pf" | "voltage" | "current" | "kw" | "frequency">("pf");
   const [shiftPct, setShiftPct] = useState<number>(35);
 
-  useEffect(() => {
+  const [prevUrlDim, setPrevUrlDim] = useState(urlDim);
+  if (urlDim !== prevUrlDim) {
+    setPrevUrlDim(urlDim);
     if (urlDim && DIMENSIONS.some((d) => d.key === urlDim)) {
       setDim(urlDim);
     }
-  }, [urlDim]);
+  }
 
   function selectDimension(next: EnergyDimensionKey) {
     setDim(next);
@@ -382,81 +377,98 @@ export function EnergyDimensionsView({
       {/* ================================================================== */}
       {dim === "consumption" && (
         <div className="space-y-4 animate-fade-in">
-          <Card>
-            <CardHeader
-              icon={<Zap />}
-              title="Kurva Tren Konsumsi Energi"
-              subtitle={`${rangeLabel} · ${granularity === "hour" ? "Resolusi per jam" : "Resolusi harian"}`}
-              actions={
-                <div className="flex flex-wrap items-center gap-2">
-                  <div className="inline-flex rounded-lg border border-line bg-canvas p-0.5 text-[12px] font-semibold">
-                    <button
-                      type="button"
-                      onClick={() => setChartMode("compare")}
-                      className={cn(
-                        "rounded-md px-2.5 py-1 transition",
-                        chartMode === "compare" ? "bg-white text-ink shadow-xs" : "text-muted hover:text-ink",
-                      )}
-                    >
-                      vs Periode Sebelumnya
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setChartMode("stacked")}
-                      className={cn(
-                        "rounded-md px-2.5 py-1 transition",
-                        chartMode === "stacked" ? "bg-white text-ink shadow-xs" : "text-muted hover:text-ink",
-                      )}
-                    >
-                      Komposisi per Mesin
-                    </button>
+          <div className="grid gap-4 xl:grid-cols-3">
+            <Card className="xl:col-span-2">
+              <CardHeader
+                title="Tren Konsumsi Energi"
+                subtitle={`${granularity === "hour" ? "Per jam" : "Per hari"} · garis putus-putus = periode sebelumnya`}
+                actions={
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="inline-flex rounded-lg border border-line bg-canvas p-0.5 text-[12px] font-semibold">
+                      <button
+                        type="button"
+                        onClick={() => setChartMode("compare")}
+                        className={cn(
+                          "rounded-md px-2.5 py-1 transition",
+                          chartMode === "compare" ? "bg-white text-ink shadow-xs" : "text-muted hover:text-ink",
+                        )}
+                      >
+                        vs Periode Sebelumnya
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setChartMode("stacked")}
+                        className={cn(
+                          "rounded-md px-2.5 py-1 transition",
+                          chartMode === "stacked" ? "bg-white text-ink shadow-xs" : "text-muted hover:text-ink",
+                        )}
+                      >
+                        Komposisi per Mesin
+                      </button>
+                    </div>
+                    <ProvenanceBadge kind={provenance} />
                   </div>
-                  <ProvenanceBadge kind={provenance} />
-                </div>
-              }
-            />
-            <CardBody>
-              {chartMode === "compare" ? (
-                <TimeSeriesChart
-                  ariaLabel="Tren konsumsi energi dibanding periode sebelumnya"
-                  data={trend}
-                  unit="kwh"
-                  granularity={granularity}
-                  height={310}
-                  series={[
-                    { key: "kwh", label: "Periode ini", color: VIZ.green, type: "area" },
-                    ...(totals.hasPrev
-                      ? [
-                          {
-                            key: "prevKwh",
-                            label: "Periode sebelumnya",
-                            color: VIZ.gray,
-                            type: "line" as const,
-                            dashed: true,
-                          },
-                        ]
-                      : []),
-                  ]}
-                />
-              ) : (
-                <TimeSeriesChart
-                  ariaLabel="Komposisi konsumsi energi per mesin"
-                  data={trend}
-                  unit="kwh"
-                  granularity={granularity}
-                  height={310}
-                  showTotal
-                  series={machines.map((m, i) => ({
-                    key: m.id,
-                    label: m.name,
+                }
+              />
+              <CardBody>
+                {chartMode === "compare" ? (
+                  <TimeSeriesChart
+                    ariaLabel="Tren konsumsi energi dibanding periode sebelumnya"
+                    data={trend}
+                    unit="kwh"
+                    granularity={granularity}
+                    series={[
+                      { key: "kwh", label: "Periode ini", color: VIZ.green, type: "area" },
+                      ...(totals.hasPrev
+                        ? [
+                            {
+                              key: "prevKwh",
+                              label: "Periode sebelumnya",
+                              color: VIZ.gray,
+                              type: "line" as const,
+                              dashed: true,
+                            },
+                          ]
+                        : []),
+                    ]}
+                  />
+                ) : (
+                  <TimeSeriesChart
+                    ariaLabel="Komposisi konsumsi energi per mesin"
+                    data={trend}
+                    unit="kwh"
+                    granularity={granularity}
+                    showTotal
+                    series={machines.map((m, i) => ({
+                      key: m.id,
+                      label: m.name,
+                      color: MACHINE_COLORS[i % MACHINE_COLORS.length],
+                      type: "bar" as const,
+                      stackId: "machines",
+                    }))}
+                  />
+                )}
+              </CardBody>
+            </Card>
+
+            <Card>
+              <CardHeader title="Energi per Mesin" subtitle={rangeLabel} actions={<ProvenanceBadge kind={provenance} />} />
+              <CardBody>
+                <DonutChart
+                  ariaLabel="Distribusi energi per mesin"
+                  data={machineSummaries.map((m, i) => ({
+                    name: m.name,
+                    value: m.kwh,
                     color: MACHINE_COLORS[i % MACHINE_COLORS.length],
-                    type: "bar" as const,
-                    stackId: "machines",
                   }))}
+                  unit="kwh"
+                  centerValue={fmtNumber(totals.kwh)}
+                  centerLabel="kWh total"
+                  height={180}
                 />
-              )}
-            </CardBody>
-          </Card>
+              </CardBody>
+            </Card>
+          </div>
 
           <div className="grid gap-4 xl:grid-cols-3">
             <Card className="xl:col-span-2">

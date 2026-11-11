@@ -224,16 +224,7 @@ function Sidebar({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
-  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
-  const [activeDim, setActiveDim] = useState<string | null>(null);
   const [hoveredHref, setHoveredHref] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const sp = new URLSearchParams(window.location.search);
-      setActiveDim(sp.get("dim"));
-    }
-  }, [pathname]);
 
   // Merge notifications into default badges if not explicitly supplied
   const badges = useMemo<Record<string, ShellBadge>>(() => {
@@ -450,8 +441,6 @@ function Sidebar({
                       const Icon = item.icon;
                       const badge = badges[item.href];
                       const isHovered = hoveredHref === item.href;
-                      const hasDims = !!item.dimensions?.length;
-                      const isDimOpen = hasDims && !collapsed && (expandedItems[item.href] ?? active);
 
                       return (
                         <li
@@ -460,134 +449,79 @@ function Sidebar({
                           onMouseEnter={() => setHoveredHref(item.href)}
                           onMouseLeave={() => setHoveredHref((h) => (h === item.href ? null : h))}
                         >
-                          <div className="relative flex items-center">
-                            <Link
-                              href={item.href}
-                              onClick={() => {
-                                setActiveDim(null);
-                                if (hasDims) setExpandedItems((prev) => ({ ...prev, [item.href]: true }));
-                              }}
-                              aria-current={active ? "page" : undefined}
+                          <Link
+                            href={item.href}
+                            aria-current={active ? "page" : undefined}
+                            className={cn(
+                              "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-[13.5px] font-medium transition-all duration-150",
+                              active
+                                ? "bg-gradient-to-r from-brand-500/25 via-white/[0.12] to-white/[0.06] text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.12)] ring-1 ring-white/15"
+                                : "text-white/70 hover:bg-white/[0.07] hover:text-white",
+                              collapsed && "lg:justify-center lg:px-0 lg:py-2.5",
+                            )}
+                          >
+                            {active && (
+                              <span
+                                aria-hidden
+                                className="absolute inset-y-1.5 left-0 w-[3.5px] rounded-r-full bg-brand-400 shadow-[0_0_10px_rgba(76,195,141,0.9)]"
+                              />
+                            )}
+
+                            <span
                               className={cn(
-                                "group relative flex flex-1 items-center gap-3 rounded-xl px-3 py-2 text-[13.5px] font-medium transition-all duration-150",
+                                "relative grid size-7 shrink-0 place-items-center rounded-lg transition-all duration-150",
                                 active
-                                  ? "bg-gradient-to-r from-brand-500/25 via-white/[0.12] to-white/[0.06] text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.12)] ring-1 ring-white/15"
-                                  : "text-white/70 hover:bg-white/[0.07] hover:text-white",
-                                hasDims && !collapsed && "pr-8",
-                                collapsed && "lg:justify-center lg:px-0 lg:py-2.5",
+                                  ? "bg-brand-400/20 text-brand-300"
+                                  : "text-white/60 group-hover:scale-110 group-hover:bg-white/[0.06] group-hover:text-brand-200",
                               )}
                             >
-                              {active && (
+                              <Icon className="size-[17px]" aria-hidden />
+                              {collapsed && badge && (
                                 <span
                                   aria-hidden
-                                  className="absolute inset-y-1.5 left-0 w-[3.5px] rounded-r-full bg-brand-400 shadow-[0_0_10px_rgba(76,195,141,0.9)]"
+                                  className={cn(
+                                    "absolute -right-0.5 -top-0.5 size-2 rounded-full ring-2 ring-forest",
+                                    badge.tone === "danger"
+                                      ? "bg-danger"
+                                      : badge.tone === "warning"
+                                        ? "bg-warning"
+                                        : "bg-brand-400",
+                                  )}
                                 />
                               )}
+                            </span>
 
+                            <span className={cn("min-w-0 flex-1", collapsed && "lg:sr-only")}>
+                              <span className="block truncate leading-tight transition-transform duration-150 group-hover:translate-x-0.5">
+                                {item.label}
+                              </span>
+                              {item.description && (active || normalizedQuery.length > 0) && (
+                                <span className="mt-0.5 block truncate text-[11px] font-normal text-white/50">
+                                  {item.description}
+                                </span>
+                              )}
+                            </span>
+
+                            {badge && !collapsed && (
                               <span
                                 className={cn(
-                                  "relative grid size-7 shrink-0 place-items-center rounded-lg transition-all duration-150",
-                                  active
-                                    ? "bg-brand-400/20 text-brand-300"
-                                    : "text-white/60 group-hover:scale-110 group-hover:bg-white/[0.06] group-hover:text-brand-200",
+                                  "num inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-semibold ring-1 ring-inset",
+                                  BADGE_TONE_CLASSES[badge.tone ?? "neutral"],
                                 )}
                               >
-                                <Icon className="size-[17px]" aria-hidden />
-                                {collapsed && badge && (
+                                {badge.pulse && (
                                   <span
                                     aria-hidden
                                     className={cn(
-                                      "absolute -right-0.5 -top-0.5 size-2 rounded-full ring-2 ring-forest",
-                                      badge.tone === "danger"
-                                        ? "bg-danger"
-                                        : badge.tone === "warning"
-                                          ? "bg-warning"
-                                          : "bg-brand-400",
+                                      "size-1.5 rounded-full animate-pulse",
+                                      badge.tone === "danger" ? "bg-red-300" : "bg-amber-300",
                                     )}
                                   />
                                 )}
+                                {badge.text}
                               </span>
-
-                              <span className={cn("min-w-0 flex-1", collapsed && "lg:sr-only")}>
-                                <span className="block truncate leading-tight transition-transform duration-150 group-hover:translate-x-0.5">
-                                  {item.label}
-                                </span>
-                                {item.description && (active || normalizedQuery.length > 0) && (
-                                  <span className="mt-0.5 block truncate text-[11px] font-normal text-white/50">
-                                    {item.description}
-                                  </span>
-                                )}
-                              </span>
-
-                              {badge && !collapsed && (
-                                <span
-                                  className={cn(
-                                    "num inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-semibold ring-1 ring-inset",
-                                    BADGE_TONE_CLASSES[badge.tone ?? "neutral"],
-                                  )}
-                                >
-                                  {badge.pulse && (
-                                    <span
-                                      aria-hidden
-                                      className={cn(
-                                        "size-1.5 rounded-full animate-pulse",
-                                        badge.tone === "danger" ? "bg-red-300" : "bg-amber-300",
-                                      )}
-                                    />
-                                  )}
-                                  {badge.text}
-                                </span>
-                              )}
-                            </Link>
-
-                            {hasDims && !collapsed && (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  setExpandedItems((prev) => ({ ...prev, [item.href]: !isDimOpen }));
-                                }}
-                                aria-label={isDimOpen ? `Tutup dimensi ${item.label}` : `Buka dimensi ${item.label}`}
-                                aria-expanded={isDimOpen}
-                                className="absolute right-1.5 rounded-lg p-1 text-white/45 transition hover:bg-white/10 hover:text-white"
-                              >
-                                <ChevronDown className={cn("size-3.5 transition-transform duration-200", isDimOpen && "rotate-180")} />
-                              </button>
                             )}
-                          </div>
-
-                          {/* Sub-dimensions tree inside the sidebar */}
-                          {isDimOpen && item.dimensions && (
-                            <ul className="mt-1 ml-6 space-y-0.5 border-l border-white/15 pl-3 py-0.5 animate-fade-in">
-                              {item.dimensions.map((dim, idx) => {
-                                const isCurrentDim = active && (activeDim ? activeDim === dim.key : idx === 0);
-                                return (
-                                  <li key={dim.key}>
-                                    <Link
-                                      href={dim.href}
-                                      onClick={() => setActiveDim(dim.key)}
-                                      className={cn(
-                                        "flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] transition-colors",
-                                        isCurrentDim
-                                          ? "bg-brand-400/20 font-semibold text-brand-200 ring-1 ring-brand-400/30"
-                                          : "text-white/60 hover:bg-white/[0.06] hover:text-white",
-                                      )}
-                                    >
-                                      <span
-                                        aria-hidden
-                                        className={cn(
-                                          "size-1.5 shrink-0 rounded-full",
-                                          isCurrentDim ? "bg-brand-300 shadow-[0_0_6px_#86dcb2]" : "bg-white/30",
-                                        )}
-                                      />
-                                      <span className="truncate">{dim.label}</span>
-                                    </Link>
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                          )}
+                          </Link>
 
                           {/* Rich floating tooltip in collapsed desktop mode */}
                           {collapsed && isHovered && (
@@ -610,19 +544,6 @@ function Sidebar({
                               </div>
                               {item.description && (
                                 <p className="mt-1 text-[11.5px] leading-snug text-white/65">{item.description}</p>
-                              )}
-                              {item.dimensions && (
-                                <div className="mt-2 border-t border-white/10 pt-2">
-                                  <p className="text-[10px] font-bold uppercase tracking-wider text-brand-300">Dimensi Tampilan</p>
-                                  <ul className="mt-1 space-y-0.5 text-[11px] text-white/75">
-                                    {item.dimensions.map((d) => (
-                                      <li key={d.key} className="flex items-center gap-1.5">
-                                        <span className="size-1 rounded-full bg-brand-400" />
-                                        {d.label}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
                               )}
                             </div>
                           )}

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Bolt, CircleDollarSign, Gauge, Sunset, Zap } from "lucide-react";
+import { Bolt, CircleDollarSign, Factory, FlaskConical, Gauge, Sunset } from "lucide-react";
 import { requireRole } from "@/lib/auth/session";
 import {
   filterHours,
@@ -19,10 +19,11 @@ import {
   readingCost,
 } from "@/lib/calc/energy";
 import { HOUR_MS, RANGE_OPTIONS, localHour, startOfLocalDay } from "@/lib/time";
-import { fmtIdrCompact, fmtNumber, fmtPct } from "@/lib/utils";
+import { fmtDateTime, fmtIdrCompact, fmtNumber, fmtPct } from "@/lib/utils";
 import { PageHeader } from "@/components/layout/page-header";
 import { QuerySelect, RangeSelect } from "@/components/filters/filters";
 import { KpiCard } from "@/components/data/kpi-card";
+import { Callout } from "@/components/ui/feedback";
 import {
   EnergyDimensionsView,
   type EnergyDimensionKey,
@@ -224,15 +225,20 @@ export default async function EnergyMonitoringPage({
     <>
       <PageHeader
         eyebrow={
-          <span className="inline-flex items-center gap-1.5">
-            <Zap className="size-3.5" aria-hidden /> Monitoring Energi Multi-Dimensi
+          <span className="inline-flex flex-wrap items-center gap-2">
+            <Factory className="size-3.5" aria-hidden />
+            {ctx.business.name} · {ctx.business.sector} · {ctx.business.city}
           </span>
         }
-        title="Monitoring Energi & Kualitas Daya"
+        title="Monitoring Energi"
         description={
           <>
-            Analisis konsumsi listrik, distribusi tarif WBP/LWBP, dan parameter kelistrikan 3-fase untuk{" "}
-            <strong className="font-semibold text-ink">{range.label}</strong>.
+            Rincian konsumsi listrik, tarif WBP/LWBP, dan kualitas daya untuk{" "}
+            <strong className="font-semibold text-ink">{range.label}</strong>. Pembaruan data terakhir{" "}
+            <time dateTime={ctx.lastUpdate.toISOString()} className="font-medium text-ink">
+              {fmtDateTime(ctx.lastUpdate)} WIB
+            </time>
+            .
           </>
         }
         actions={
@@ -242,7 +248,7 @@ export default async function EnergyMonitoringPage({
               value={selectedMachineId}
               label="Filter mesin"
               options={[
-                { value: "", label: "Semua Mesin (6 titik ukur)" },
+                { value: "", label: "Semua Mesin" },
                 ...ctx.machines.map((m) => ({ value: m.id, label: m.name })),
               ]}
             />
@@ -251,10 +257,10 @@ export default async function EnergyMonitoringPage({
               value={hourFilter}
               label="Filter jam operasional"
               options={[
-                { value: "all", label: "Semua Jam (24 Jam)" },
+                { value: "all", label: "Semua Jam" },
                 { value: "work", label: "Jam Kerja (07.00–17.00)" },
-                { value: "peak", label: `Jam Puncak WBP (${ctx.tariff.peakStartHour}.00–${ctx.tariff.peakEndHour}.00)` },
-                { value: "off", label: "Luar Jam Kerja (17.00–07.00)" },
+                { value: "peak", label: `Jam WBP (${ctx.tariff.peakStartHour}.00–${ctx.tariff.peakEndHour}.00)` },
+                { value: "off", label: "Luar Jam Kerja" },
               ]}
             />
             <RangeSelect value={range.key} options={RANGE_OPTIONS} clearParams={["from", "to"]} />
@@ -262,17 +268,24 @@ export default async function EnergyMonitoringPage({
         }
       />
 
+      {ctx.mode === "demo" && (
+        <Callout tone="info" icon={<FlaskConical />} className="mb-6">
+          <strong>Lingkungan DEMO.</strong> Seluruh pembacaan energi pada dashboard ini adalah data simulasi untuk usaha fiktif dan bukan pembacaan sensor nyata.
+          Biaya dan emisi merupakan estimasi berdasarkan asumsi yang dapat diubah di Pengaturan.
+        </Callout>
+      )}
+
       {/* Top KPI Summary */}
-      <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mb-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard
-          label="Konsumsi Energi"
+          label="Total Penggunaan Energi"
           icon={<Bolt />}
           value={fmtNumber(totals.kwh)}
           unit="kWh"
           provenance={prov}
           deltaPct={prevTotals ? pctChange(totals.kwh, prevTotals.kwh) : null}
           goodWhen="down"
-          footnote="vs periode pembanding"
+          footnote="vs periode sebelumnya"
         />
         <KpiCard
           label="Estimasi Biaya Listrik"
@@ -281,7 +294,7 @@ export default async function EnergyMonitoringPage({
           provenance="estimated"
           deltaPct={prevTotals ? pctChange(totals.costIdr, prevTotals.costIdr) : null}
           goodWhen="down"
-          footnote={`Golongan ${ctx.tariff.tariffGroup} · LWBP & WBP`}
+          footnote={`Tarif ${ctx.tariff.tariffGroup} (asumsi)`}
         />
         <KpiCard
           label="Porsi Beban Puncak (WBP)"
@@ -300,8 +313,8 @@ export default async function EnergyMonitoringPage({
           provenance={prov}
           footnote={
             totals.avgPowerFactor !== null && totals.avgPowerFactor >= 0.85
-              ? "Memenuhi standar PLN (≥ 0,85)"
-              : "Di bawah ambang 0,85 — cek kapasitor"
+              ? `Baik · ≥ 0,85 standar PLN`
+              : `Perlu perhatian · < 0,85 PLN`
           }
         />
       </div>

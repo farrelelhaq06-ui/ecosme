@@ -1,32 +1,25 @@
 "use client";
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
-  AlertTriangle,
   ArrowRight,
   Bell,
   Check,
   CheckCheck,
   CheckCircle2,
-  Clock,
-  Cpu,
-  Filter,
-  Info,
   Layers,
   RotateCcw,
-  Router,
   ShieldAlert,
   Siren,
   SlidersHorizontal,
   Wrench,
-  Zap,
 } from "lucide-react";
 import { acknowledgeAlerts, reopenAlert } from "@/app/actions/platform";
 import type { AlertSeverity, AlertType } from "@/lib/domain/types";
 import type { AlertWithAck } from "@/lib/services/ikm";
-import { cn, fmtDateTime, fmtNumber, fmtRelative } from "@/lib/utils";
+import { cn, fmtDateTime, fmtRelative } from "@/lib/utils";
 import { Card, CardBody, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -169,19 +162,23 @@ export function AlertsDimensionsView({
   );
   const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
+  const [prevUrlDim, setPrevUrlDim] = useState(urlDim);
+  if (urlDim !== prevUrlDim) {
+    setPrevUrlDim(urlDim);
     if (urlDim && DIMENSIONS.some((d) => d.key === urlDim)) {
       setDim(urlDim);
     }
-  }, [urlDim]);
+  }
 
-  useEffect(() => {
+  const [prevFocusId, setPrevFocusId] = useState(focusId);
+  if (focusId !== prevFocusId) {
+    setPrevFocusId(focusId);
     if (focusId && alerts.some((a) => a.id === focusId)) {
       const target = alerts.find((a) => a.id === focusId)!;
       if (target.acknowledged) setStatusFilter("all");
       setSelectedId(focusId);
     }
-  }, [focusId, alerts]);
+  }
 
   function selectDimension(next: AlertsDimensionKey) {
     setDim(next);

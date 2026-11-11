@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Bolt, Clock, Cpu, Flame, Gauge } from "lucide-react";
+import { Bolt, Clock, Factory, Flame, FlaskConical, Gauge } from "lucide-react";
 import { requireRole } from "@/lib/auth/session";
 import {
   getIkmContext,
@@ -17,10 +17,11 @@ import {
 } from "@/lib/calc/energy";
 import type { MachineCategory } from "@/lib/domain/types";
 import { RANGE_OPTIONS, localHour } from "@/lib/time";
-import { fmtIdrCompact, fmtNumber, fmtPct } from "@/lib/utils";
+import { fmtDateTime, fmtIdrCompact, fmtNumber, fmtPct } from "@/lib/utils";
 import { PageHeader } from "@/components/layout/page-header";
 import { RangeSelect } from "@/components/filters/filters";
 import { KpiCard } from "@/components/data/kpi-card";
+import { Callout } from "@/components/ui/feedback";
 import {
   MachinesDimensionsView,
   type MachineDetailItem,
@@ -144,23 +145,34 @@ export default async function MachinesPage({
     <>
       <PageHeader
         eyebrow={
-          <span className="inline-flex items-center gap-1.5">
-            <Cpu className="size-3.5" aria-hidden /> Pemantauan Peralatan & Mesin Produksi
+          <span className="inline-flex flex-wrap items-center gap-2">
+            <Factory className="size-3.5" aria-hidden />
+            {ctx.business.name} · {ctx.business.sector} · {ctx.business.city}
           </span>
         }
-        title="Analisis Kinerja & Efisiensi Mesin"
+        title="Mesin"
         description={
           <>
-            Evaluasi beban listrik, jadwal operasional, faktor daya, dan telemetri sensor pada{" "}
-            <strong className="font-semibold text-ink">{ctx.machines.length} titik ukur mesin</strong> selama{" "}
-            <strong className="font-semibold text-ink">{range.label}</strong>.
+            Profil beban dan efisiensi per mesin untuk{" "}
+            <strong className="font-semibold text-ink">{range.label}</strong>. Pembaruan data terakhir{" "}
+            <time dateTime={ctx.lastUpdate.toISOString()} className="font-medium text-ink">
+              {fmtDateTime(ctx.lastUpdate)} WIB
+            </time>
+            .
           </>
         }
         actions={<RangeSelect value={range.key} options={RANGE_OPTIONS} />}
       />
 
+      {ctx.mode === "demo" && (
+        <Callout tone="info" icon={<FlaskConical />} className="mb-6">
+          <strong>Lingkungan DEMO.</strong> Seluruh pembacaan energi pada dashboard ini adalah data simulasi untuk usaha fiktif dan bukan pembacaan sensor nyata.
+          Biaya dan emisi merupakan estimasi berdasarkan asumsi yang dapat diubah di Pengaturan.
+        </Callout>
+      )}
+
       {/* Top KPI Row */}
-      <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mb-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard
           label="Konsumsi Terbesar"
           icon={<Flame />}
