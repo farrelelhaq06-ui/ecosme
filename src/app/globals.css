@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+/* ============================================================
+   EcoSME design tokens
+   ============================================================ */
+@theme {
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jbmono), ui-monospace, SFMono-Regular, monospace;
+
+  /* Brand greens */
+  --color-forest-950: #0a2419;
+  --color-forest: #123b2a;
+  --color-forest-800: #184c37;
+  --color-brand-50: #f0fbf5;
+  --color-brand-100: #ddf7e8;
+  --color-brand-200: #b9ecd1;
+  --color-brand-300: #86dcb2;
+  --color-brand-400: #4cc38d;
+  --color-brand-500: #16a36a;
+  --color-brand-600: #118657;
+  --color-brand-700: #0f6b47;
+
+  /* Navy */
+  --color-navy: #14243a;
+  --color-navy-700: #1f3552;
+  --color-navy-500: #3d5a80;
+
+  /* Neutrals */
+  --color-canvas: #f5f8f6;
+  --color-surface: #ffffff;
+  --color-ink: #1d2939;
+  --color-muted: #667085;
+  --color-subtle: #98a2b3;
+  --color-line: #e4e9e6;
+  --color-line-strong: #d0d8d3;
+
+  /* Status */
+  --color-warning: #f79009;
+  --color-warning-50: #fffaeb;
+  --color-warning-700: #b54708;
+  --color-danger: #d92d20;
+  --color-danger-50: #fef3f2;
+  --color-danger-700: #b42318;
+  --color-success: #12b76a;
+  --color-success-50: #ecfdf3;
+  --color-success-700: #027a48;
+  --color-info: #2e90fa;
+  --color-info-50: #eff8ff;
+  --color-info-700: #175cd3;
+
+  /* Data-viz palette (colour-blind aware ordering) */
+  --color-viz-1: #16a36a;
+  --color-viz-2: #14243a;
+  --color-viz-3: #2e90fa;
+  --color-viz-4: #f79009;
+  --color-viz-5: #9e77ed;
+  --color-viz-6: #98a2b3;
+
+  --radius-card: 14px;
+  --shadow-card: 0 1px 2px rgb(16 24 40 / 0.04), 0 1px 3px rgb(16 24 40 / 0.06);
+  --shadow-pop: 0 12px 32px -8px rgb(16 24 40 / 0.18), 0 4px 8px -4px rgb(16 24 40 / 0.08);
+
+  --animate-fade-in: fade-in 0.35s ease-out both;
+  --animate-rise: rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+  --animate-pulse-dot: pulse-dot 2s ease-in-out infinite;
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shimmer {
+    from { background-position: -400px 0; }
+    to { background-position: 400px 0; }
+  }
+  @keyframes pulse-dot {
+    0%, 100% { box-shadow: 0 0 0 0 rgb(18 183 106 / 0.45); }
+    50% { box-shadow: 0 0 0 5px rgb(18 183 106 / 0); }
+  }
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  ::selection {
+    @apply bg-brand-100 text-forest;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-500;
+  }
+  h1, h2, h3, h4 {
+    @apply tracking-tight text-ink;
+  }
+}
+
+@layer components {
+  .num {
+    @apply font-mono tabular-nums tracking-tight;
+  }
+  .skeleton {
+    background: linear-gradient(90deg, #eef2ef 0px, #f7f9f8 120px, #eef2ef 240px);
+    background-size: 800px 100%;
+    @apply animate-shimmer rounded-md;
+  }
+  .grid-bg {
+    background-image:
+      linear-gradient(to right, rgb(18 59 42 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(18 59 42 / 0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #d0d8d3 transparent;
+  }
+}
+
+/* Recharts polish */
+.recharts-cartesian-axis-tick-value {
+  font-size: 11px;
+  fill: #667085;
+}
+.recharts-legend-item-text {
+  color: #475467 !important;
+  font-size: 12px;
+}
+.recharts-surface:focus,
+.recharts-wrapper:focus,
+.recharts-sector:focus {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
