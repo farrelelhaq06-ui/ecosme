@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Bolt, Clock, Factory, Flame, FlaskConical, Gauge } from "lucide-react";
+import { Bolt, Clock, Factory, Flame, Gauge } from "lucide-react";
 import { requireRole } from "@/lib/auth/session";
 import {
   getIkmContext,
@@ -22,6 +22,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { RangeSelect } from "@/components/filters/filters";
 import { KpiCard } from "@/components/data/kpi-card";
 import { Callout } from "@/components/ui/feedback";
+import { MascotAvatar } from "@/components/brand/logo";
 import {
   MachinesDimensionsView,
   type MachineDetailItem,
@@ -165,7 +166,7 @@ export default async function MachinesPage({
       />
 
       {ctx.mode === "demo" && (
-        <Callout tone="info" icon={<FlaskConical />} className="mb-6">
+        <Callout tone="info" icon={<MascotAvatar size={26} className="ring-1 ring-blue-300" />} className="mb-6">
           <strong>Lingkungan DEMO.</strong> Seluruh pembacaan energi pada dashboard ini adalah data simulasi untuk usaha fiktif dan bukan pembacaan sensor nyata.
           Biaya dan emisi merupakan estimasi berdasarkan asumsi yang dapat diubah di Pengaturan.
         </Callout>

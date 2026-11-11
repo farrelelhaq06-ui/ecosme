@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -14,10 +15,12 @@ import {
   Radio,
   Repeat,
   ShieldCheck,
+  Sparkles,
   Wallet,
   Zap,
 } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
+import { MascotAvatar } from "@/components/brand/logo";
 import { BankPreview, DashboardPreview } from "@/components/marketing/previews";
 import { PricingCards, SectionHeading } from "@/components/marketing/sections";
 import { STEPS } from "@/components/marketing/steps";
@@ -31,8 +34,9 @@ export default function LandingPage() {
         <div aria-hidden className="absolute -top-40 right-[-10%] size-[560px] rounded-full bg-brand-200/40 blur-3xl" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 pb-20 pt-14 sm:px-6 lg:grid-cols-[1fr_1.05fr] lg:px-8 lg:pb-28 lg:pt-20">
           <div className="animate-rise">
-            <p className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-[12.5px] font-semibold text-brand-700">
-              <Leaf className="size-3.5" aria-hidden /> Smart Energy & Green Finance untuk IKM Indonesia
+            <p className="inline-flex items-center gap-2.5 rounded-full border border-brand-200/90 bg-brand-50/80 px-3.5 py-1.5 text-[12.5px] font-semibold text-brand-800 shadow-xs backdrop-blur-xs">
+              <MascotAvatar size={24} className="ring-1 ring-brand-500/30" />
+              <span>Smart Energy & Green Finance untuk IKM Indonesia</span>
             </p>
             <h1 className="mt-6 text-[40px] font-extrabold leading-[1.08] tracking-tight text-forest sm:text-5xl lg:text-[56px]">
               Ubah Data Energi Menjadi <span className="text-brand-500">Efisiensi</span> dan Peluang Pembiayaan.
@@ -208,21 +212,49 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20">
-        <div className="mx-auto max-w-5xl px-4 text-center sm:px-6">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Mulai dari satu panel listrik.</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-[16px] leading-7 text-muted">Jelajahi dashboard demo sekarang, atau daftarkan usaha Anda untuk menyiapkan pemasangan perangkat.</p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <ButtonLink href="/register" size="lg">
-              Mulai Monitoring
-            </ButtonLink>
-            <ButtonLink href="/login" size="lg" variant="outline">
-              Masuk ke demo
-            </ButtonLink>
+      <section className="relative overflow-hidden py-20 lg:py-28">
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-50/50 to-emerald-50/30" />
+        <div className="relative mx-auto max-w-5xl px-4 sm:px-6">
+          <div className="relative overflow-hidden rounded-3xl border border-brand-200/80 bg-white p-8 shadow-xl sm:p-12 lg:grid lg:grid-cols-[1.3fr_1fr] lg:items-center lg:gap-8">
+            <div className="relative z-10">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-700 ring-1 ring-brand-200">
+                <Sparkles className="size-3.5 text-brand-600" /> Asisten Pintar Energi & ESG
+              </span>
+              <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-forest sm:text-4xl">
+                Mulai dari Satu Panel Listrik Utama.
+              </h2>
+              <p className="mt-3.5 text-[15.5px] leading-relaxed text-muted">
+                Jelajahi dashboard demo sekarang, atau hubungkan fasilitas pabrik Anda untuk mendeteksi pemborosan energi, memangkas biaya WBP, dan membuka peluang kredit hijau.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <ButtonLink href="/register" size="lg">
+                  Mulai Monitoring Sekarang
+                </ButtonLink>
+                <ButtonLink href="/login" size="lg" variant="outline">
+                  Masuk ke Demo
+                </ButtonLink>
+              </div>
+              <p className="mt-6 text-[13px] text-muted">
+                Ingin tahu detail metodologi?{" "}
+                <Link href="/how-it-works" className="font-semibold text-brand-700 underline-offset-2 hover:underline">
+                  Baca cara kerja →
+                </Link>
+              </p>
+            </div>
+            <div className="mt-8 flex justify-center lg:mt-0">
+              <div className="relative">
+                <div className="absolute inset-0 rounded-full bg-brand-300/30 blur-3xl" />
+                <Image
+                  src="/brand/mascot.png"
+                  alt="Maskot EcoBot EcoSME"
+                  width={280}
+                  height={360}
+                  className="relative z-10 max-h-[290px] w-auto object-contain drop-shadow-2xl transition-transform duration-300 hover:scale-105"
+                  priority
+                />
+              </div>
+            </div>
           </div>
-          <p className="mt-6 text-[13px] text-muted">
-            Ingin tahu detail metodologi? <Link href="/how-it-works" className="font-semibold text-brand-700 underline-offset-2 hover:underline">Baca cara kerja</Link>
-          </p>
         </div>
       </section>
     </>

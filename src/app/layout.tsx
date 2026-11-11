@@ -23,6 +23,11 @@ export const metadata: Metadata = {
   description:
     "EcoSME membantu IKM memantau penggunaan listrik per mesin, mengoptimalkan biaya energi, mengukur penghematan dengan baseline terdokumentasi, dan menyiapkan data pendukung pembiayaan hijau.",
   applicationName: "EcoSME",
+  icons: {
+    icon: "/brand/logo.png",
+    shortcut: "/brand/logo.png",
+    apple: "/brand/logo.png",
+  },
   keywords: ["IoT energi", "IKM", "efisiensi energi", "pembiayaan hijau", "monitoring listrik", "green finance", "M&V"],
   openGraph: {
     title: "EcoSME — Smart Energy. Measurable Savings. Smarter Green Financing.",

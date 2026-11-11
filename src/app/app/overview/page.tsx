@@ -8,7 +8,6 @@ import {
   Clock,
   DatabaseZap,
   Factory,
-  FlaskConical,
   Gauge,
   Leaf,
   Lightbulb,
@@ -35,6 +34,7 @@ import { TimeSeriesChart } from "@/components/charts/time-series-chart";
 import { DonutChart } from "@/components/charts/donut-chart";
 import { MACHINE_COLORS, VIZ } from "@/components/charts/format";
 import { ScoreRing } from "@/components/data/score-ring";
+import { MascotAvatar } from "@/components/brand/logo";
 
 export const metadata: Metadata = { title: "Ringkasan" };
 
@@ -88,7 +88,11 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
         </Callout>
       )}
       {ctx.mode === "demo" && (
-        <Callout tone="info" icon={<FlaskConical />} className="mb-6">
+        <Callout
+          tone="info"
+          icon={<MascotAvatar size={26} className="ring-1 ring-blue-300" />}
+          className="mb-6"
+        >
           <strong>Lingkungan DEMO.</strong> Seluruh pembacaan energi pada dashboard ini adalah data simulasi untuk usaha fiktif dan bukan pembacaan sensor nyata.
           Biaya dan emisi merupakan estimasi berdasarkan asumsi yang dapat diubah di Pengaturan.
         </Callout>

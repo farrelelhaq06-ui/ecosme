@@ -1,14 +1,25 @@
+import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export function LogoMark({ className }: { className?: string }) {
+export function LogoMark({ className, size = 32 }: { className?: string; size?: number }) {
   return (
-    <svg viewBox="0 0 32 32" className={cn("size-8", className)} aria-hidden>
-      <rect width="32" height="32" rx="9" fill="#123B2A" />
-      <path d="M9 21.5c0-6.6 5-11.5 14-12-0.4 8.6-5.3 13.5-11.6 13.5-0.9 0-1.7-0.1-2.4-0.4" fill="#16A36A" />
-      <path d="M9.5 22.5c2.6-3.6 5.6-6.2 9.5-8" stroke="#DDF7E8" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-      <path d="M17.2 17.6l-1.6 3h2.6l-1.6 3" stroke="#DDF7E8" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-    </svg>
+    <div
+      className={cn(
+        "relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-0.5 shadow-xs ring-1 ring-black/10 transition-transform duration-200 group-hover:scale-105",
+        className,
+      )}
+      style={{ width: size, height: size }}
+    >
+      <Image
+        src="/brand/logo.png"
+        alt="Logo EcoSME"
+        width={size * 2}
+        height={size * 2}
+        className="size-full object-contain"
+        priority
+      />
+    </div>
   );
 }
 
@@ -24,13 +35,43 @@ export function Logo({
   className?: string;
 }) {
   return (
-    <Link href={href} className={cn("inline-flex items-center gap-2.5 rounded-lg", className)} aria-label="EcoSME — beranda">
-      <LogoMark />
+    <Link
+      href={href}
+      className={cn("group inline-flex items-center gap-2.5 rounded-lg transition-opacity hover:opacity-95", className)}
+      aria-label="EcoSME — beranda"
+    >
+      <LogoMark className={inverted ? "ring-white/20 shadow-md" : "ring-slate-200 shadow-sm"} />
       {!compact && (
-        <span className={cn("text-[17px] font-extrabold tracking-tight", inverted ? "text-white" : "text-forest")}>
-          Eco<span className="text-brand-500">SME</span>
+        <span className={cn("text-[17.5px] font-extrabold tracking-tight", inverted ? "text-white" : "text-forest")}>
+          Eco<span className={inverted ? "text-brand-300" : "text-brand-500"}>SME</span>
         </span>
       )}
     </Link>
+  );
+}
+
+export function MascotAvatar({
+  className,
+  size = 40,
+}: {
+  className?: string;
+  size?: number;
+}) {
+  return (
+    <div
+      className={cn(
+        "relative flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-white p-0.5 shadow-sm ring-2 ring-brand-400/40",
+        className,
+      )}
+      style={{ width: size, height: size }}
+    >
+      <Image
+        src="/brand/mascot.png"
+        alt="EcoBot Mascot"
+        width={size * 2}
+        height={size * 2}
+        className="size-full object-contain object-top"
+      />
+    </div>
   );
 }

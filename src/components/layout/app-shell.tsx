@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, useTransition, type ReactNode } from "react";
 import {
-  Activity,
   ArrowUpRight,
   Bell,
   Check,
@@ -28,7 +27,7 @@ import {
   Zap,
 } from "lucide-react";
 import { demoLoginAction, logoutAction } from "@/app/actions/auth";
-import { Logo, LogoMark } from "@/components/brand/logo";
+import { Logo, LogoMark, MascotAvatar } from "@/components/brand/logo";
 import { NAV, PORTAL_META, SEGMENT_LABEL, type Portal } from "@/components/layout/nav";
 import { cn, fmtIdrCompact, fmtNumber, fmtRelative } from "@/lib/utils";
 
@@ -828,12 +827,9 @@ function SidebarPulseWidget({
           onClick={onExpandSidebar}
           title={`Eco-Pulse Live · Green Score ${greenScore} (${greenGrade}) · ${devicesOnline}/${devicesTotal} sensor online`}
           aria-label="Buka widget Eco-Pulse"
-          className="group relative flex w-full flex-col items-center justify-center gap-1 rounded-xl bg-gradient-to-b from-brand-500/20 to-white/[0.04] py-2.5 ring-1 ring-brand-400/30 transition hover:from-brand-500/30 hover:ring-brand-300/50"
+          className="group relative flex w-full flex-col items-center justify-center gap-1 rounded-xl bg-gradient-to-b from-brand-500/20 to-white/[0.04] p-2 ring-1 ring-brand-400/30 transition hover:from-brand-500/30 hover:ring-brand-300/50"
         >
-          <span className="relative flex size-6 items-center justify-center">
-            <span aria-hidden className="absolute inset-0 rounded-full bg-brand-400/30 animate-ping" />
-            <Activity className="relative size-4 text-brand-300" aria-hidden />
-          </span>
+          <MascotAvatar size={28} className="transition-transform group-hover:scale-110" />
           <span className="num text-[10px] font-bold text-brand-200">{greenScore}</span>
         </button>
       </div>
@@ -850,11 +846,10 @@ function SidebarPulseWidget({
           className="flex flex-1 items-center gap-2 text-left"
           aria-expanded={!minimized}
         >
-          <span className="relative flex size-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-400 opacity-75" />
-            <span className="relative inline-flex size-2 rounded-full bg-brand-400" />
-          </span>
-          <span className="text-[11.5px] font-bold tracking-wide text-white">Eco-Pulse Interaktif</span>
+          <MascotAvatar size={22} />
+          <div className="min-w-0">
+            <span className="block text-[11.5px] font-bold tracking-wide text-white leading-tight">Eco-Pulse Interaktif</span>
+          </div>
         </button>
         <button
           type="button"
