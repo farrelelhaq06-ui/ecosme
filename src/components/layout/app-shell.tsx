@@ -224,6 +224,7 @@ function Sidebar({
   const [query, setQuery] = useState("");
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+  const [activeDim, setActiveDim] = useState<string | null>(null);
   const [hoveredHref, setHoveredHref] = useState<string | null>(null);
 
   // Merge notifications into default badges if not explicitly supplied
@@ -455,6 +456,7 @@ function Sidebar({
                             <Link
                               href={item.href}
                               onClick={() => {
+                                setActiveDim(null);
                                 if (hasDims) setExpandedItems((prev) => ({ ...prev, [item.href]: true }));
                               }}
                               aria-current={active ? "page" : undefined}
@@ -550,17 +552,32 @@ function Sidebar({
                           {/* Sub-dimensi di dalam sidebar ketika item dibuka */}
                           {isDimOpen && item.dimensions && (
                             <ul className="mt-1 ml-6 space-y-0.5 border-l border-white/15 pl-3 py-0.5 animate-fade-in">
-                              {item.dimensions.map((dim) => (
-                                <li key={dim.key}>
-                                  <Link
-                                    href={dim.href}
-                                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] text-white/65 transition-colors hover:bg-white/[0.07] hover:text-white"
-                                  >
-                                    <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-white/35" />
-                                    <span className="truncate">{dim.label}</span>
-                                  </Link>
-                                </li>
-                              ))}
+                              {item.dimensions.map((dim, idx) => {
+                                const isCurrentDim = active && (activeDim ? activeDim === dim.key : idx === 0);
+                                return (
+                                  <li key={dim.key}>
+                                    <Link
+                                      href={dim.href}
+                                      onClick={() => setActiveDim(dim.key)}
+                                      className={cn(
+                                        "flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12px] transition-colors",
+                                        isCurrentDim
+                                          ? "bg-brand-400/20 font-semibold text-brand-200 ring-1 ring-brand-400/30"
+                                          : "text-white/65 hover:bg-white/[0.07] hover:text-white",
+                                      )}
+                                    >
+                                      <span
+                                        aria-hidden
+                                        className={cn(
+                                          "size-1.5 shrink-0 rounded-full",
+                                          isCurrentDim ? "bg-brand-300 shadow-[0_0_6px_#86dcb2]" : "bg-white/35",
+                                        )}
+                                      />
+                                      <span className="truncate">{dim.label}</span>
+                                    </Link>
+                                  </li>
+                                );
+                              })}
                             </ul>
                           )}
 

@@ -99,9 +99,45 @@ export const NAV: Record<Portal, NavGroup[]> = {
     {
       label: "Kinerja",
       items: [
-        { href: "/app/savings", label: "Penghematan (M&V)", icon: PiggyBank, description: "Verifikasi hemat vs baseline IPMVP", keywords: ["ipmvp", "baseline", "hemat", "rupiah"] },
-        { href: "/app/sustainability", label: "Keberlanjutan", icon: Leaf, description: "Jejak karbon & intensitas emisi", keywords: ["emisi", "co2", "karbon", "esg"] },
-        { href: "/app/green-score", label: "Green Score", icon: Gauge, description: "Skor kinerja efisiensi 0–100", keywords: ["skor", "grade", "rating"] },
+        {
+          href: "/app/savings",
+          label: "Penghematan (M&V)",
+          icon: PiggyBank,
+          description: "Verifikasi hemat vs baseline IPMVP",
+          keywords: ["ipmvp", "baseline", "hemat", "rupiah", "roi"],
+          dimensions: [
+            { key: "verification", label: "Verifikasi & Periode M&V", href: "/app/savings?dim=verification" },
+            { key: "baseline", label: "Model Baseline & Regresi", href: "/app/savings?dim=baseline" },
+            { key: "measures", label: "Tindakan Efisiensi & ROI", href: "/app/savings?dim=measures" },
+            { key: "simulator", label: "Kalkulator Proyeksi M&V", href: "/app/savings?dim=simulator" },
+          ],
+        },
+        {
+          href: "/app/sustainability",
+          label: "Keberlanjutan",
+          icon: Leaf,
+          description: "Jejak karbon & intensitas emisi",
+          keywords: ["emisi", "co2", "karbon", "esg", "plts"],
+          dimensions: [
+            { key: "footprint", label: "Jejak Karbon & Tren CO₂e", href: "/app/sustainability?dim=footprint" },
+            { key: "machines", label: "Kontribusi Emisi Mesin", href: "/app/sustainability?dim=machines" },
+            { key: "intensity", label: "Intensitas Karbon Produksi", href: "/app/sustainability?dim=intensity" },
+            { key: "decarbonization", label: "Simulasi Dekarbonisasi", href: "/app/sustainability?dim=decarbonization" },
+          ],
+        },
+        {
+          href: "/app/green-score",
+          label: "Green Score",
+          icon: Gauge,
+          description: "Skor kinerja efisiensi 0–100",
+          keywords: ["skor", "grade", "rating", "bobot", "simulasi"],
+          dimensions: [
+            { key: "breakdown", label: "Rincian 5 Komponen Skor", href: "/app/green-score?dim=breakdown" },
+            { key: "history", label: "Tren Historis & Benchmark", href: "/app/green-score?dim=history" },
+            { key: "simulator", label: "Simulator Peningkatan Skor", href: "/app/green-score?dim=simulator" },
+            { key: "methodology", label: "Metodologi & Aturan Bobot", href: "/app/green-score?dim=methodology" },
+          ],
+        },
       ],
     },
     {
