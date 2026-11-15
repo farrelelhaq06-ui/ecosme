@@ -143,15 +143,63 @@ export const NAV: Record<Portal, NavGroup[]> = {
     {
       label: "Pembiayaan",
       items: [
-        { href: "/app/financing", label: "Kesiapan Pembiayaan", icon: Handshake, description: "Checklist dokumen & izin berbagi data", keywords: ["bank", "kredit", "pinjaman", "dokumen"] },
-        { href: "/app/reports", label: "Laporan", icon: FileText, description: "Ekspor paket data & laporan M&V", keywords: ["unduh", "pdf", "csv", "ekspor"] },
+        {
+          href: "/app/financing",
+          label: "Kesiapan Pembiayaan",
+          icon: Handshake,
+          description: "Checklist dokumen & izin berbagi data",
+          keywords: ["bank", "kredit", "pinjaman", "dokumen", "consent", "cicilan"],
+          dimensions: [
+            { key: "checklist", label: "Checklist & Skor Kesiapan", href: "/app/financing?dim=checklist" },
+            { key: "documents", label: "Dokumen Legal & Persetujuan", href: "/app/financing?dim=documents" },
+            { key: "applications", label: "Pengajuan & Status Mitra", href: "/app/financing?dim=applications" },
+            { key: "simulator", label: "Simulator Kredit Hijau", href: "/app/financing?dim=simulator" },
+          ],
+        },
+        {
+          href: "/app/reports",
+          label: "Laporan",
+          icon: FileText,
+          description: "Ekspor paket data & laporan M&V",
+          keywords: ["unduh", "pdf", "csv", "ekspor", "cetak", "audit"],
+          dimensions: [
+            { key: "packages", label: "Paket Laporan Resmi", href: "/app/reports?dim=packages" },
+            { key: "preview", label: "Pratinjau Eksekutif & M&V", href: "/app/reports?dim=preview" },
+            { key: "export", label: "Ekspor CSV & Dataset Mentah", href: "/app/reports?dim=export" },
+            { key: "history", label: "Riwayat Unduhan & Audit", href: "/app/reports?dim=history" },
+          ],
+        },
       ],
     },
     {
       label: "Sistem",
       items: [
-        { href: "/app/devices", label: "Perangkat IoT", icon: Router, description: "Status sensor & kelengkapan data", keywords: ["sensor", "meter", "online", "offline"] },
-        { href: "/app/settings", label: "Pengaturan", icon: Settings, description: "Profil usaha, tarif & parameter", keywords: ["profil", "akun", "konfigurasi"] },
+        {
+          href: "/app/devices",
+          label: "Perangkat IoT",
+          icon: Router,
+          description: "Status sensor & kelengkapan data",
+          keywords: ["sensor", "meter", "online", "offline", "pairing", "firmware"],
+          dimensions: [
+            { key: "fleet", label: "Status Sensor & Konektivitas", href: "/app/devices?dim=fleet" },
+            { key: "quality", label: "Kelengkapan Data & Celah", href: "/app/devices?dim=quality" },
+            { key: "pairing", label: "Registrasi & Pairing Sensor", href: "/app/devices?dim=pairing" },
+            { key: "diagnostics", label: "Diagnostik Sinyal & Firmware", href: "/app/devices?dim=diagnostics" },
+          ],
+        },
+        {
+          href: "/app/settings",
+          label: "Pengaturan",
+          icon: Settings,
+          description: "Profil usaha, tarif & parameter",
+          keywords: ["profil", "akun", "konfigurasi", "tarif", "emisi", "privasi"],
+          dimensions: [
+            { key: "profile", label: "Profil Usaha & Fasilitas", href: "/app/settings?dim=profile" },
+            { key: "tariff", label: "Tarif Listrik & Faktor Emisi", href: "/app/settings?dim=tariff" },
+            { key: "targets", label: "Target Efisiensi & Notifikasi", href: "/app/settings?dim=targets" },
+            { key: "governance", label: "Keamanan, Privasi & Audit", href: "/app/settings?dim=governance" },
+          ],
+        },
       ],
     },
   ],
